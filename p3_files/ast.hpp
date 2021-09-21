@@ -86,6 +86,24 @@ public:
 	// indicate if this is a reference type
 };
 
+class BinaryExpNode : public ExpNode{
+public:
+	BinaryExpNode(Position * p, ExpNode * rhs, ExpNode * lhs) : ExpNode(p), MyRHS(rhs), MyLHS(lhs){}
+	void unparse(std::ostream& out, int indent) override = 0;
+private:
+	ExpNode * MyRHS;
+	ExpNode * MyLHS;
+};
+
+class PlusNode: public BinaryExpNode{
+public:
+	PlusNode(Position * p, BinaryExpNode * rhs, BinaryExpNode * lhs) : BinaryExpNode(p), MyRHS(rhs), MyLHS(lhs){}
+	void unparse(std::ostream& out, int indent) override = 0;
+private:
+	BinaryExpNode * MyRHS;
+	BinaryExpNode * MyLHS;
+};
+
 class LValNode : public ExpNode{
 public:
 	LValNode(Position * p) : ExpNode(p){}
@@ -143,8 +161,10 @@ public:
 
 class RecordTypeNode : public TypeNode{
 public:
-	RecordTypeNode(Position * p) : TypeNode(p){ }
+	RecordTypeNode(Position * p, IDNode * id) : TypeNode(p), MyId(id) { }
 	void unparse(std::ostream& out, int indent);
+private:
+	IDNode * MyId;
 };
 
 class StringTypeNode : public TypeNode{

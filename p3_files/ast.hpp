@@ -158,48 +158,17 @@ public:
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
-class PlusNode: public BinaryExpNode{
-public:
-	PlusNode(Position * p) : ExpNode(p){}
-	void unparse(std::ostream& out, int indent) override = 0;
-};
+//IfElseStmtNode
 
-/** An identifier. Note that IDNodes subclass
- * ExpNode because they can be used as part of an expression. 
-**/
-class IDNode : public LValNode{
-public:
-	IDNode(Position * p, std::string nameIn) 
-	: LValNode(p), name(nameIn){ }
-	void unparse(std::ostream& out, int indent);
-private:
-	/** The name of the identifier **/
-	std::string name;
-};
+//IfStmtNode
 
- 
-/** A variable declaration. Note that this class is intended to 
- * represent a global or local variable of any type (including a struct
- * type. Note that this is not intended to represent a declaration of
- * a struct. In other words:
- * struct MyStruct { 
- *   int fieldA;
- * };
- * is NOT a VarDeclNode because it introduces a new datatype, not a new
- * variable (in this case, the example is a StructDeclNode).  * However,
- * struct MyStruct instance; *is* a VarDeclNode, since it introduces a 
- * new variable to the program. 
-**/
-class VarDeclNode : public DeclNode{
-public:
-	VarDeclNode(Position * p, TypeNode * type, IDNode * id) 
-	: DeclNode(p), myType(type), myId(id){
-	}
-	void unparse(std::ostream& out, int indent);
-private:
-	TypeNode * myType;
-	IDNode * myId;
-};
+//PostIncStmtNode
+
+//RecieveStmtNode
+
+//ReportStmtNode
+
+//WhileStmtNode
 
 class BoolTypeNode : public TypeNode{
 public:
@@ -232,6 +201,142 @@ public:
 	VoidTypeNode(Position * p) : TypeNode(p){ }
 	void unparse(std::ostream& out, int indent);
 };
+
+/*class AndNode public BinaryExpNode{
+public:
+	AndNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class DivideNode public BinaryExpNode{
+public:
+	DivideNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class EqualsNode: public BinaryExpNode{
+public:
+	EqualsNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class GreaterEqNode: public BinaryExpNode{
+public:
+	GreaterEqNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class GreaterNode: public BinaryExpNode{
+public:
+	GreaterNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class LessEqNode: public BinaryExpNode{
+public:
+	LessEqNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class LessNode: public BinaryExpNode{
+public:
+	LessNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class MinusNode: public BinaryExpNode{
+public:
+	MinusNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class NotEqualsNode: public BinaryExpNode{
+public:
+	NotEqualsNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class OrNode: public BinaryExpNode{
+public:
+	OrNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class PlusNode: public BinaryExpNode{
+public:
+	Plus(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class TimesNode: public BinaryExpNode{
+public:
+	TimesNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};*/
+
+/** An identifier. Note that IDNodes subclass
+ * ExpNode because they can be used as part of an expression. 
+**/
+class IDNode : public LValNode{
+public:
+	IDNode(Position * p, std::string nameIn) 
+	: LValNode(p), name(nameIn){ }
+	void unparse(std::ostream& out, int indent);
+private:
+	/** The name of the identifier **/
+	std::string name;
+};
+
+/*class IndexNode : public LValNode{
+public:
+	IndexNode(Position * p, IDNode id1, IDNode id2) 
+	: LValNode(p), MyId1(id1), MyId2(id2){ }
+	void unparse(std::ostream& out, int indent);
+private:
+	IDNode MyId1;
+	IDNode MyId2;
+};*/
+
+class NegNode : public UnaryExpNode {
+public:
+	NegNode(Position * p) : UnaryExpNode(p){ }
+	void unparse(std::ostream& out, int indent);
+};
+
+class NotNode : public UnaryExpNode {
+public:
+	NotNode(Position * p) : UnaryExpNode(p){ }
+	void unparse(std::ostream& out, int indent);
+};
+
+//FnDeclNode
+
+//RecordTypeDeclNode
+ 
+/** A variable declaration. Note that this class is intended to 
+ * represent a global or local variable of any type (including a struct
+ * type. Note that this is not intended to represent a declaration of
+ * a struct. In other words:
+ * struct MyStruct { 
+ *   int fieldA;
+ * };
+ * is NOT a VarDeclNode because it introduces a new datatype, not a new
+ * variable (in this case, the example is a StructDeclNode).  * However,
+ * struct MyStruct instance; *is* a VarDeclNode, since it introduces a 
+ * new variable to the program. 
+**/
+class VarDeclNode : public DeclNode{
+public:
+	VarDeclNode(Position * p, TypeNode * type, IDNode * id) 
+	: DeclNode(p), myType(type), myId(id){
+	}
+	void unparse(std::ostream& out, int indent);
+private:
+	TypeNode * myType;
+	IDNode * myId;
+};
+
+//FormalDeclNode
 
 } //End namespace cshanty
 

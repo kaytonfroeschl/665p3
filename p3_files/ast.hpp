@@ -202,33 +202,77 @@ public:
 	void unparse(std::ostream& out, int indent);
 };
 
-//AndNode
-
-//DivideNode
-
-//EqualsNode
-
-//GreaterEqNode
-
-//GreaterNode
-
-//LessEqNode
-
-//LessNode
-
-//MinusNode
-
-//NotEqualsNode
-
-//OrNode
-
-class PlusNode: public BinaryExpNode{
+/*class AndNode public BinaryExpNode{
 public:
-	PlusNode(Position * p) : ExpNode(p){}
+	AndNode(Position * p) : ExpNode(p){}
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
-//TimesNode
+class DivideNode public BinaryExpNode{
+public:
+	DivideNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class EqualsNode: public BinaryExpNode{
+public:
+	EqualsNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class GreaterEqNode: public BinaryExpNode{
+public:
+	GreaterEqNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class GreaterNode: public BinaryExpNode{
+public:
+	GreaterNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class LessEqNode: public BinaryExpNode{
+public:
+	LessEqNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class LessNode: public BinaryExpNode{
+public:
+	LessNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class MinusNode: public BinaryExpNode{
+public:
+	MinusNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class NotEqualsNode: public BinaryExpNode{
+public:
+	NotEqualsNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class OrNode: public BinaryExpNode{
+public:
+	OrNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class PlusNode: public BinaryExpNode{
+public:
+	Plus(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class TimesNode: public BinaryExpNode{
+public:
+	TimesNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};*/
 
 /** An identifier. Note that IDNodes subclass
  * ExpNode because they can be used as part of an expression. 
@@ -243,11 +287,27 @@ private:
 	std::string name;
 };
 
-//IndexNode
+/*class IndexNode : public LValNode{
+public:
+	IndexNode(Position * p, IDNode id1, IDNode id2) 
+	: LValNode(p), MyId1(id1), MyId2(id2){ }
+	void unparse(std::ostream& out, int indent);
+private:
+	IDNode MyId1;
+	IDNode MyId2;
+};*/
 
-//NegNode
+class NegNode : public UnaryExpNode {
+public:
+	NegNode(Position * p) : UnaryExpNode(p){ }
+	void unparse(std::ostream& out, int indent);
+};
 
-//NotNode
+class NotNode : public UnaryExpNode {
+public:
+	NotNode(Position * p) : UnaryExpNode(p){ }
+	void unparse(std::ostream& out, int indent);
+};
 
 //FnDeclNode
 

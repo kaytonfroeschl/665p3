@@ -174,9 +174,7 @@ decl 		: varDecl
 		  }
 		| fnDecl 
 		  { 
-			//TODO: Make sure to fill out this rule
-			// (as well as any other empty rule!)
-			// with the appropriate SDD to create an AST
+			//$$ = new DeclNode($1->pos());
 		  }
 		| recordDecl { /* SDD Rules can even be on the same line if you want */ }
 
@@ -193,7 +191,7 @@ varDeclList     : varDecl { }
 
 type 		: INT { $$ = new IntTypeNode($1->pos()); }
 		| BOOL { $$ = new BoolTypeNode($1->pos()); }
-		| id { $$ = new RecoredTypeNode($1->pos()); }
+		| id { $$ = new RecordTypeNode($1->pos(), $1); }
 		| STRING { $$ = new StringTypeNode($1->pos()); }
 		| VOID { $$ = new VoidTypeNode($1->pos()); }
 
@@ -256,7 +254,7 @@ callExp		: id LPAREN RPAREN { }
 actualsList	: exp { }
 		| actualsList COMMA exp { }
 
-term 		: lval { }
+term 		: lval { $$ = new LValNode($1->pos()); }
 		| INTLITERAL { }
 		| STRLITERAL { }
 		| TRUE { }

@@ -220,27 +220,32 @@ stmt		: varDecl { }
 		| callExp SEMICOL { }
 
 exp		: assignExp { } 
-		| exp MINUS exp { }
-		| exp PLUS exp { }
-		| exp TIMES exp { }
-		| exp DIVIDE exp { }
-		| exp AND exp { }
-		| exp OR exp { }
-		| exp EQUALS exp { }
+		| exp MINUS exp { $$ = $1 - $3; } //these are not correct -----
+		| exp PLUS exp { $$ = $1 + $3; }
+		| exp TIMES exp { $$ = $1 * $3; }
+		| exp DIVIDE exp { $$ = $1 / $3; }
+		| exp AND exp { $$ = $1 && $3; }
+		| exp OR exp { $$ = $1 || $3; }
+		| exp EQUALS exp { $$ = $1 == $3; }
 		| exp NOTEQUALS exp
 	  	  {
+			$$ = $1 != $3;
 		  }
 		| exp GREATER exp
 	  	  {
+			$$ = $1 > $3;
 		  }
 		| exp GREATEREQ exp
 	  	  {
+			$$ = $1 >= $3;
 		  }
 		| exp LESS exp
 	  	  {
+			$$ = $1 < $3;
 		  }
 		| exp LESSEQ exp
 	  	  {
+			$$ = $1 <= $3; //---------- from here
 		  }
 		| NOT exp { }
 		| MINUS term { }
@@ -255,11 +260,11 @@ actualsList	: exp { }
 		| actualsList COMMA exp { }
 
 term 		: lval { $$ = new LValNode($1->pos()); }
-		| INTLITERAL { }
-		| STRLITERAL { }
+		| INTLITERAL { $$ = new IntLitNode($1->pos(), $1->value); }
+		| STRLITERAL { $$ = new StrLItNode($1->pos(), $1->value); }
 		| TRUE { }
 		| FALSE { }
-		| LPAREN exp RPAREN { }
+		| LPAREN exp RPAREN { $$ = ($2); }
 		| callExp { }
 
 lval		: id { $$ = $1; }

@@ -85,22 +85,22 @@ private:
 	ExpNode * MyExp;
 };
 
-/*class BinaryExpNode : public ExpNode{
+class BinaryExpNode : public ExpNode{
 public:
 	BinaryExpNode(Position * p, ExpNode * rhs, ExpNode * lhs) : ExpNode(p), MyRHS(rhs), MyLHS(lhs){}
 	void unparse(std::ostream& out, int indent) override = 0;
 private:
 	ExpNode * MyRHS;
 	ExpNode * MyLHS;
-};*/
+};
 
-class CallExpNode : public ExpNode {
+/*class CallExpNode : public ExpNode {
 public: 
 	CallExpNode(Position * p, IDNode * id) : ExpNode(p), MyId(id){} //need to add "list of ExpNode (arguments) to this 
 	void unparse(std::ostream& out, int indent) override = 0;
 private:
 	IDNode * MyId;
-};
+};*/
 
 //FalseNode here 
 
@@ -130,15 +130,23 @@ private:
 
 class UnaryExpNode : public ExpNode{
 public:
-	LValNode(Position * p) : ExpNode(p){}
+	UnaryExpNode(Position * p) : ExpNode(p){}
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
-class AssingStmtNode : public StmtNode{
+/*class AssignStmtNode : public StmtNode{
 public:
-	AssignStmtNode(Position * p) : StmtNode(p) { }
+	AssignStmtNode(Position * p, AssignExpNode assign) : StmtNode(p), MyAssign(assign) { }
 	void unparse(std::ostream& out, int indent) override = 0;
-};
+private:
+	AssignExpNode * MyAssign;
+};*/
+
+/*class CallStmtNode : public StmtNode{
+public:
+	CallStmtNode(Position * p, CallExpNode call) : StmtNode(p), MyCall(call){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};*/
 
 /** \class DeclNode
 * Superclass for declarations (i.e. nodes that can be used to 
@@ -150,11 +158,11 @@ public:
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
-/*class PlusNode: public BinaryExpNode{
+class PlusNode: public BinaryExpNode{
 public:
-	PlusNode(Position * p) : BinaryExpNode(p){}
+	PlusNode(Position * p) : ExpNode(p){}
 	void unparse(std::ostream& out, int indent) override = 0;
-};*/
+};
 
 /** An identifier. Note that IDNodes subclass
  * ExpNode because they can be used as part of an expression. 

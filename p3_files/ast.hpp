@@ -205,27 +205,27 @@ public:
 	void unparse(std::ostream& out, int indent);
 };
 
-/*class AndNode public BinaryExpNode{
+class AndNode: public BinaryExpNode{
 public:
-	AndNode(Position * p) : ExpNode(p){}
+	AndNode(Position * p) : ExpNode(p){ }
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
-class DivideNode public BinaryExpNode{
+class DivideNode: public BinaryExpNode{
 public:
-	DivideNode(Position * p) : ExpNode(p){}
+	DivideNode(Position * p) : ExpNode(p){ }
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
 class EqualsNode: public BinaryExpNode{
 public:
-	EqualsNode(Position * p) : ExpNode(p){}
+	EqualsNode(Position * p) : ExpNode(p){ }
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
 class GreaterEqNode: public BinaryExpNode{
 public:
-	GreaterEqNode(Position * p) : ExpNode(p){}
+	GreaterEqNode(Position * p) : ExpNode(p){ }
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
@@ -275,7 +275,7 @@ class TimesNode: public BinaryExpNode{
 public:
 	TimesNode(Position * p) : ExpNode(p){}
 	void unparse(std::ostream& out, int indent) override = 0;
-};*/
+};
 
 /** An identifier. Note that IDNodes subclass
  * ExpNode because they can be used as part of an expression. 

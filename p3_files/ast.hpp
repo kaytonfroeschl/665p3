@@ -97,13 +97,12 @@ private:
 
 class CallExpNode : public ExpNode {
 public: 
-	CallExpNode(Position * p, IDNode* id, std::list<ExpNode> ExpList) : ExpNode(p) { }
+	CallExpNode(Position * p, IDNode* id, std::list<ExpNode*>* ExpList) : ExpNode(p) { }
 	void unparse(std::ostream& out, int indent) override = 0;
 private:
 	IDNode * MyId;
+	std::list<ExpNode * > * myList;
 };
-
-//FalseNode here 
 
 class IntLitNode : public ExpNode{
 public:
@@ -129,6 +128,8 @@ private:
 
 //TrueNode here 
 
+//FalseNode here 
+
 class UnaryExpNode : public ExpNode{
 public:
 	UnaryExpNode(Position * p) : ExpNode(p){}
@@ -143,11 +144,11 @@ private:
 	AssignExpNode * MyAssign;
 };
 
-/*class CallStmtNode : public StmtNode{
+class CallStmtNode : public StmtNode{
 public:
-	CallStmtNode(Position * p, CallExpNode call) : StmtNode(p), MyCall(call){}
-	void unparse(std::ostream& out, int indent) override = 0;
-};*/
+	CallStmtNode(Position * p, CallExpNode* call) : StmtNode(p){ }
+	void unparse(std::ostream& out, int indent);
+};
 
 /** \class DeclNode
 * Superclass for declarations (i.e. nodes that can be used to 
@@ -161,14 +162,19 @@ public:
 
 class IfElseStmtNode : StmtNode{
 	public: 
-		IfElseStmtNode(Position* p, ExpNode* exp, std::list<StmtNode> tBranch, std::list<StmtNode> fBranch) : StmtNode(p) { }
+		IfElseStmtNode(Position* p, ExpNode* exp, std::list<StmtNode> tBranch, std::list<StmtNode*>* fBranch) : StmtNode(p) { }
 		void unparse(std::ostream& out, int indent);
+	private:
+		std::list<StmtNode*>* myTBranch;
+		std::list<StmtNode*>* myRBranch;
 };
 
 class IfStmtNode : public StmtNode{
 	public: 
-		IfStmtNode(Position* p, ExpNode* node, std::list<ExpNode> sList) : StmtNode(p) { }
+		IfStmtNode(Position* p, ExpNode* node, std::list<ExpNode*>* sList) : StmtNode(p) { }
 		void unparse(std::ostream& out, int indent);
+	private:
+		std::list<ExpNode*>* myList;
 };
 
 class PostDecStmtNode : public StmtNode{
@@ -195,8 +201,10 @@ class ReportsStmtNode : public StmtNode{
 
 class WhileStmtNode : public StmtNode{
 	public: 
-		WhileStmtNode(Position* p, ExpNode* exp, std::list<StmtNode> sList) : StmtNode(p) { }
+		WhileStmtNode(Position* p, ExpNode* exp, std::list<StmtNode*>* sList) : StmtNode(p) { }
 		void unparse(std::ostream& out, int indent);
+	private:
+		std::list<StmtNode*>* my_List;
 };
 
 class ReturnStmtNode : public StmtNode{
@@ -322,7 +330,7 @@ private:
 	std::string name;
 };
 
-/*class IndexNode : public LValNode{
+class IndexNode : public LValNode{
 public:
 	IndexNode(Position * p, IDNode id1, IDNode id2) 
 	: LValNode(p), MyId1(id1), MyId2(id2){ }
@@ -330,7 +338,7 @@ public:
 private:
 	IDNode MyId1;
 	IDNode MyId2;
-};*/
+};
 
 class NegNode : public UnaryExpNode {
 public:
@@ -344,9 +352,6 @@ public:
 	void unparse(std::ostream& out, int indent);
 };
 
-//FnDeclNode
-
-//RecordTypeDeclNode
  
 /** A variable declaration. Note that this class is intended to 
  * represent a global or local variable of any type (including a struct

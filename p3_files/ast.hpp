@@ -126,9 +126,17 @@ private:
 	std::string MyString;
 };
 
-//TrueNode here 
+class TrueNode : public ExpNode{
+	public: 
+		TrueNode(Position* p) : ExpNode(p){ }
+		void unparse(std::ostream& out, int indent);
+};
 
-//FalseNode here 
+class FalseNode : public ExpNode{
+	public: 
+		FalseNode(Position* p) : ExpNode(p){ }
+		void unparse(std::ostream& out, int indent);
+};
 
 class UnaryExpNode : public ExpNode{
 public:

@@ -18,6 +18,7 @@ class DeclNode;
 class TypeNode;
 class StmtNode;
 class IDNode;
+class LValNode;
 
 class ASTNode{
 public:
@@ -27,6 +28,16 @@ public:
 	std::string posStr() { return pos()->span(); }
 protected:
 	Position * myPos;
+};
+
+/**  \class ExpNode
+* Superclass for expression nodes (i.e. nodes that can be used as
+* part of an expression).  Nodes that are part of an expression
+* should inherit from this abstract superclass.
+**/
+class ExpNode : public ASTNode{
+protected:
+	ExpNode(Position * p) : ASTNode(p){ }
 };
 
 /** 
@@ -50,27 +61,6 @@ public:
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
-
-/** \class DeclNode
-* Superclass for declarations (i.e. nodes that can be used to 
-* declare a struct, function, variable, etc).  This base class will 
-**/
-class DeclNode : public StmtNode{
-public:
-	DeclNode(Position * p) : StmtNode(p) { }
-	void unparse(std::ostream& out, int indent) override = 0;
-};
-
-/**  \class ExpNode
-* Superclass for expression nodes (i.e. nodes that can be used as
-* part of an expression).  Nodes that are part of an expression
-* should inherit from this abstract superclass.
-**/
-class ExpNode : public ASTNode{
-protected:
-	ExpNode(Position * p) : ASTNode(p){ }
-};
-
 /**  \class TypeNode
 * Superclass of nodes that indicate a data type. For example, in 
 * the declaration "int a", the int part is the type node (a is an IDNode
@@ -86,11 +76,203 @@ public:
 	// indicate if this is a reference type
 };
 
+class AssignExpNode : public ExpNode{
+public:
+	AssignExpNode(Position * p, LValNode * lval, ExpNode * exp) : ExpNode(p), MyLVal(lval), MyExp(exp){}
+	void unparse(std::ostream& out, int indent) override = 0;
+private:
+	LValNode * MyLVal;
+	ExpNode * MyExp;
+};
+
+class BinaryExpNode : public ExpNode{
+public:
+	BinaryExpNode(Position * p, ExpNode * rhs, ExpNode * lhs) : ExpNode(p), MyRHS(rhs), MyLHS(lhs){}
+	void unparse(std::ostream& out, int indent) override = 0;
+private:
+	ExpNode * MyRHS;
+	ExpNode * MyLHS;
+};
+
+/*class CallExpNode : public ExpNode {
+public: 
+	CallExpNode(Position * p, IDNode * id, list<ExpNode> &ExpList) : ExpNode(p), MyId(id){},  //need to add "list of ExpNode (arguments) to this 
+	void unparse(std::ostream& out, int indent) override = 0;
+private:
+	IDNode * MyId;
+};*/
+
+//FalseNode here 
+
+class IntLitNode : public ExpNode{
+public:
+	IntLitNode(Position * p, int i) : ExpNode(p), MyInt(i){}
+	void unparse(std::ostream& out, int indent) override = 0;
+private:
+	int MyInt;
+};
+
 class LValNode : public ExpNode{
 public:
 	LValNode(Position * p) : ExpNode(p){}
 	void unparse(std::ostream& out, int indent) override = 0;
 };
+
+class StrLitNode : public ExpNode{
+public:
+	StrLitNode(Position * p, std::string str) : ExpNode(p), MyString(str){}
+	void unparse(std::ostream& out, int indent) override = 0;
+private:
+	std::string MyString;
+};
+
+//TrueNode here 
+
+class UnaryExpNode : public ExpNode{
+public:
+	UnaryExpNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+/*class AssignStmtNode : public StmtNode{
+public:
+	AssignStmtNode(Position * p, AssignExpNode assign) : StmtNode(p), MyAssign(assign) { }
+	void unparse(std::ostream& out, int indent) override = 0;
+private:
+	AssignExpNode * MyAssign;
+};*/
+
+/*class CallStmtNode : public StmtNode{
+public:
+	CallStmtNode(Position * p, CallExpNode call) : StmtNode(p), MyCall(call){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};*/
+
+/** \class DeclNode
+* Superclass for declarations (i.e. nodes that can be used to 
+* declare a struct, function, variable, etc).  This base class will 
+**/
+class DeclNode : public StmtNode{
+public:
+	DeclNode(Position * p) : StmtNode(p) { }
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+//IfElseStmtNode
+
+//IfStmtNode
+
+//PostIncStmtNode
+
+//RecieveStmtNode
+
+//ReportStmtNode
+
+//WhileStmtNode
+
+class BoolTypeNode : public TypeNode{
+public:
+	BoolTypeNode(Position * p) : TypeNode(p){ }
+	void unparse(std::ostream& out, int indent);
+};
+
+class IntTypeNode : public TypeNode{
+public:
+	IntTypeNode(Position * p) : TypeNode(p){ }
+	void unparse(std::ostream& out, int indent);
+};
+
+class RecordTypeNode : public TypeNode{
+public:
+	RecordTypeNode(Position * p, IDNode * id) : TypeNode(p), MyId(id) { }
+	void unparse(std::ostream& out, int indent);
+private:
+	IDNode * MyId;
+};
+
+class StringTypeNode : public TypeNode{
+public:
+	StringTypeNode(Position * p) : TypeNode(p){ }
+	void unparse(std::ostream& out, int indent);
+};
+
+class VoidTypeNode : public TypeNode{
+public:
+	VoidTypeNode(Position * p) : TypeNode(p){ }
+	void unparse(std::ostream& out, int indent);
+};
+
+/*class AndNode public BinaryExpNode{
+public:
+	AndNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class DivideNode public BinaryExpNode{
+public:
+	DivideNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class EqualsNode: public BinaryExpNode{
+public:
+	EqualsNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class GreaterEqNode: public BinaryExpNode{
+public:
+	GreaterEqNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class GreaterNode: public BinaryExpNode{
+public:
+	GreaterNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class LessEqNode: public BinaryExpNode{
+public:
+	LessEqNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class LessNode: public BinaryExpNode{
+public:
+	LessNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class MinusNode: public BinaryExpNode{
+public:
+	MinusNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class NotEqualsNode: public BinaryExpNode{
+public:
+	NotEqualsNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class OrNode: public BinaryExpNode{
+public:
+	OrNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class PlusNode: public BinaryExpNode{
+public:
+	Plus(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};
+
+class TimesNode: public BinaryExpNode{
+public:
+	TimesNode(Position * p) : ExpNode(p){}
+	void unparse(std::ostream& out, int indent) override = 0;
+};*/
 
 /** An identifier. Note that IDNodes subclass
  * ExpNode because they can be used as part of an expression. 
@@ -105,6 +287,31 @@ private:
 	std::string name;
 };
 
+/*class IndexNode : public LValNode{
+public:
+	IndexNode(Position * p, IDNode id1, IDNode id2) 
+	: LValNode(p), MyId1(id1), MyId2(id2){ }
+	void unparse(std::ostream& out, int indent);
+private:
+	IDNode MyId1;
+	IDNode MyId2;
+};*/
+
+class NegNode : public UnaryExpNode {
+public:
+	NegNode(Position * p) : UnaryExpNode(p){ }
+	void unparse(std::ostream& out, int indent);
+};
+
+class NotNode : public UnaryExpNode {
+public:
+	NotNode(Position * p) : UnaryExpNode(p){ }
+	void unparse(std::ostream& out, int indent);
+};
+
+//FnDeclNode
+
+//RecordTypeDeclNode
  
 /** A variable declaration. Note that this class is intended to 
  * represent a global or local variable of any type (including a struct
@@ -129,11 +336,7 @@ private:
 	IDNode * myId;
 };
 
-class IntTypeNode : public TypeNode{
-public:
-	IntTypeNode(Position * p) : TypeNode(p){ }
-	void unparse(std::ostream& out, int indent);
-};
+//FormalDeclNode
 
 } //End namespace cshanty
 

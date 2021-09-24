@@ -174,9 +174,7 @@ decl 		: varDecl
 		  }
 		| fnDecl 
 		  { 
-			//TODO: Make sure to fill out this rule
-			// (as well as any other empty rule!)
-			// with the appropriate SDD to create an AST
+			//$$ = new DeclNode($1->pos());
 		  }
 		| recordDecl { /* SDD Rules can even be on the same line if you want */ }
 
@@ -193,9 +191,9 @@ varDeclList     : varDecl { }
 
 type 		: INT { $$ = new IntTypeNode($1->pos()); }
 		| BOOL { $$ = new BoolTypeNode($1->pos()); }
-		| id { }
-		| STRING { }
-		| VOID { }
+		| id { $$ = new RecordTypeNode($1->pos(), $1); }
+		| STRING { $$ = new StringTypeNode($1->pos()); }
+		| VOID { $$ = new VoidTypeNode($1->pos()); }
 
 fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE { }
 		| type id LPAREN formals RPAREN OPEN stmtList CLOSE { }
@@ -222,27 +220,32 @@ stmt		: varDecl { }
 		| callExp SEMICOL { }
 
 exp		: assignExp { } 
-		| exp MINUS exp { }
-		| exp PLUS exp { }
-		| exp TIMES exp { }
-		| exp DIVIDE exp { }
-		| exp AND exp { }
-		| exp OR exp { }
-		| exp EQUALS exp { }
+		| exp MINUS exp { $$ = $1 - $3; } //these are not correct -----
+		| exp PLUS exp { $$ = $1 + $3; }
+		| exp TIMES exp { $$ = $1 * $3; }
+		| exp DIVIDE exp { $$ = $1 / $3; }
+		| exp AND exp { $$ = $1 && $3; }
+		| exp OR exp { $$ = $1 || $3; }
+		| exp EQUALS exp { $$ = $1 == $3; }
 		| exp NOTEQUALS exp
 	  	  {
+			$$ = $1 != $3;
 		  }
 		| exp GREATER exp
 	  	  {
+			$$ = $1 > $3;
 		  }
 		| exp GREATEREQ exp
 	  	  {
+			$$ = $1 >= $3;
 		  }
 		| exp LESS exp
 	  	  {
+			$$ = $1 < $3;
 		  }
 		| exp LESSEQ exp
 	  	  {
+			$$ = $1 <= $3; //---------- from here
 		  }
 		| NOT exp { }
 		| MINUS term { }
@@ -256,12 +259,12 @@ callExp		: id LPAREN RPAREN { }
 actualsList	: exp { }
 		| actualsList COMMA exp { }
 
-term 		: lval { }
-		| INTLITERAL { }
-		| STRLITERAL { }
+term 		: lval { $$ = new LValNode($1->pos()); }
+		| INTLITERAL { $$ = new IntLitNode($1->pos(), $1->value); }
+		| STRLITERAL { $$ = new StrLItNode($1->pos(), $1->value); }
 		| TRUE { }
 		| FALSE { }
-		| LPAREN exp RPAREN { }
+		| LPAREN exp RPAREN { $$ = ($2); }
 		| callExp { }
 
 lval		: id { $$ = $1; }

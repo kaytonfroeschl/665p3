@@ -134,13 +134,13 @@ public:
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
-/*class AssignStmtNode : public StmtNode{
+class AssignStmtNode : public StmtNode{
 public:
 	AssignStmtNode(Position * p, AssignExpNode assign) : StmtNode(p), MyAssign(assign) { }
 	void unparse(std::ostream& out, int indent) override = 0;
 private:
 	AssignExpNode * MyAssign;
-};*/
+};
 
 /*class CallStmtNode : public StmtNode{
 public:
@@ -160,7 +160,10 @@ public:
 
 //IfElseStmtNode
 
-//IfStmtNode
+/*class IfStmtNode : public StmtNode{
+	public: 
+		IfStmtNode(Position* p, ExpNode node, )
+}*/
 
 //PostIncStmtNode
 

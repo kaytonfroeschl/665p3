@@ -384,7 +384,25 @@ private:
 	IDNode * myId;
 };
 
-//FormalDeclNode
+class FnDeclNode : public DeclNode{
+	public:
+		FnDeclNode(Position* p, TypeNode* type, IDNode* id, std::list<FormalDeclNode*>* fList, std::list<StmtNode*>* sList)
+		: DeclNode(p), myType(type), myId(id){ }
+		void unparse(std::ostream& out, int indent);
+	private:
+		TypeNode* myType;
+		IDNode* myId;
+};
+
+class FormalDeclNode : public VarDeclNode{
+	public:
+		FormalDeclNode(Position* p, TypeNode* type, IDNode* id)
+		: VarDeclNode(p, type, id), myType(type), myId(id){ }
+		void unparse(std::ostream& out, int indent);
+	private:
+		TypeNode* myType;
+		IDNode* myId;
+};
 
 } //End namespace cshanty
 

@@ -55,6 +55,14 @@ void BinaryExpNode::unparse(std::ostream& out, int indent){
 	this->MyRHS->unparse(out, 0);
 }
 
+void CallExpNode::unparse(std::ostream& out, int indent){
+	doIndent(out, indent);
+	this->MyId->unparse(out, 0);
+	out << "(";
+	//this->myList->unparse(out, 0);
+	out << ");\n";
+}
+
 void VarDeclNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
 	this->myType->unparse(out, 0);

@@ -174,11 +174,14 @@ decl 		: varDecl
 		  }
 		| fnDecl 
 		  { 
-			//$$ = new DeclNode($1->pos());
+			//$$ = new DeclNode($1->pos()); UNSURE
 		  }
-		| recordDecl { /* SDD Rules can even be on the same line if you want */ }
+		| recordDecl { //$$ = new DeclNode($1->pos()); UNSURE }
 
-recordDecl	: RECORD id OPEN varDeclList CLOSE { }
+recordDecl	: RECORD id OPEN varDeclList CLOSE 
+		{
+			//FILL OUT
+		}
 
 varDecl 	: type id SEMICOL 
 		  { 
@@ -195,13 +198,23 @@ type 		: INT { $$ = new IntTypeNode($1->pos()); }
 		| STRING { $$ = new StringTypeNode($1->pos()); }
 		| VOID { $$ = new VoidTypeNode($1->pos()); }
 
-fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE { }
+fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE 
+			{ 
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos(), $4->pos(),$6->pos());
+				FormalDeclList = new std::list<FormalDeclNode*>* FList(p,$1,$2);
+				SmtList = new std::list<StmtList*>* SList(p);
+				$$ = new FnDeclNode(p, $1, $2, FormalDeclList, SmtList);
+			}
 		| type id LPAREN formals RPAREN OPEN stmtList CLOSE { }
 
 formals 	: formalDecl { }
 		| formals COMMA formalDecl { }
 
-formalDecl 	: type id { }
+formalDecl 	: type id 
+	{ 
+		Position* p = new Position($1->pos(), $2->pos());
+		$$ = new FormalDeclNode(p, $1, $2);
+	}
 
 stmtList 	: /* epsilon */ { }
 		| stmtList stmt { }
@@ -219,25 +232,84 @@ stmt		: varDecl { }
 		| RETURN SEMICOL { }
 		| callExp SEMICOL { }
 
-exp		: assignExp { } 
-		| exp MINUS exp { $$ = $1 - $3; } //these are not correct -----
-		| exp PLUS exp { $$ = $1 + $3; }
-		| exp TIMES exp { $$ = $1 * $3; }
-		| exp DIVIDE exp  { if ($3 == 0) {
- 							printf("divide by zero\n");
- 							$$ = 0; } 
-							else {$$ = $1 / $3;} }
-		| exp AND exp { $$ = $1 && $3; }
-		| exp OR exp { $$ = $1 || $3; }
-		| exp EQUALS exp { $$ = $1 == $3; }
-		| exp NOTEQUALS exp { $$ = $1 != $3; }
-		| exp GREATER exp { $$ = $1 > $3; }
-		| exp GREATEREQ exp { $$ = $1 >= $3; }
-		| exp LESS exp { $$ = $1 < $3; }
-		| exp LESSEQ exp { $$ = $1 <= $3; }
-		| NOT exp { $$ = !$1; }
-		| MINUS term { $$ = -$1; }
-		| term { $$ = $1; }
+exp		: assignExp 
+			{
+				//no idea?????
+			} 
+		| exp MINUS exp 
+			{ 
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new MinusNode(p, $1, $3);
+			}
+		| exp PLUS exp 
+			{ 
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new PlusNode(p, $1, $3);
+			}
+		| exp TIMES exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new TimesNode(p, $1, $3);
+			}
+		| exp DIVIDE exp  
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new DivideNode(p, $1, $3);
+			}
+		| exp AND exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new AndNode(p, $1, $3);
+			}
+		| exp OR exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new OrNode(p, $1, $3);
+			}
+		| exp EQUALS exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new EqualsNode(p, $1, $3);
+			}
+		| exp NOTEQUALS exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new NotEqualsNode(p, $1, $3);
+			}
+		| exp GREATER exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new GreaterNode(p, $1, $3);
+			}
+		| exp GREATEREQ exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new GreaterEqNode(p, $1, $3);
+			}
+		| exp LESS exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new LessNode(p, $1, $3);
+			}
+		| exp LESSEQ exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new LessEqNode(p, $1, $3);
+			}
+		| NOT exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos());
+				$$ = new NotNode(p);
+			}
+		| MINUS term 
+			{ 
+				Position* p = new Position($1->pos(), $2->pos());
+				$$ = new NegNode(p);
+			}
+		| term 
+			{
+				$$ = $1;
+			}
 
 assignExp	: lval ASSIGN exp { }
 

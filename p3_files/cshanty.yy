@@ -337,19 +337,23 @@ actualsList	: exp
 			}
 		| actualsList COMMA exp 
 			{
-				
+
 			}
 
 term 		: lval { $$ = new LValNode($1->pos()); }
 		| INTLITERAL { $$ = new IntLitNode($1->pos(), $1->value); }
 		| STRLITERAL { $$ = new StrLItNode($1->pos(), $1->value); }
-		| TRUE { }
-		| FALSE { }
-		| LPAREN exp RPAREN { $$ = ($2); }
+		| TRUE { $$ = new TrueNode($1->pos()); }
+		| FALSE { $$ = new FalseNode($1->pos()); }
+		| LPAREN exp RPAREN { $$ = $2; }
 		| callExp { }
 
 lval		: id { $$ = $1; }
-		| id LBRACE id RBRACE { }
+		| id LBRACE id RBRACE 
+			{
+				Position* p = new Position($1->pos(), $3->pos());
+				$$ = new LValNode(p);
+			}
 
 id		: ID
 		  {

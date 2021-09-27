@@ -66,6 +66,53 @@ project)
    cshanty::TypeNode *                     transType;
    cshanty::IDNode *                       transID;
    cshanty::LValNode *                     transLVal;
+   cshanty::ExpNode *					   transExp;
+   cshanty::AssignExpNode *				   transAssignExp;
+   cshanty::StmtNode *					   transStmt;
+   cshanty::CallExpNode *				   transCallExp;
+   cshanty::AndNode *					   transAnd;
+   cshanty::DivideNode *					transDivide;
+   cshanty::EqualsNode *					transEquals;
+   cshanty::GreaterEqNode *					transGreaterEq;
+   cshanty::GreaterNode *					transGreater;
+   cshanty::LessEqNode *					transLessEq;
+   cshanty::LessNode *						transLess;
+   cshanty::MinusNode *						transMinus;
+   cshanty::NotEqualsNode *					transNotEquals;
+   cshanty::OrNode *						transOr;
+   cshanty::PlusNode *						transPlus;
+   cshanty::TimesNode *						transTimes;
+   cshanty::IDNode *						transID;
+   cshanty::IndexNode *						transIndex;
+   cshanty::NegNode *						transNeg;
+   cshanty::NotNode *						transNot;
+   cshanty::FnDeclNode *					transFnDecl;
+   cshanty::RecordTypeDeclNode *			transRecordTypeDecl;
+   cshanty::FormalDecl *					transFormalDecl;
+   cshanty::BinaryExpNode *					transBinaryExp;
+   cshanty::FalseNode *						transFalse;
+   cshanty::IntLitNode *					transIntLit;
+   cshanty::StrLitNode *					transStrLit;
+   cshanty::TrueNode *						transTrue;
+   cshanty::UnaryExpNode *					transUnaryExp;
+   cshanty::AssignStmtNode *				transAssignStmt;
+   cshanty::CallStmtNode *					transCallStmt;
+   cshanty::IfElseStmtNode *				transIfElseStmt;
+   cshanty::IfStmtNode *					transIfStmt;
+   cshanty::PostDecStmtNode *				transPostDecStmt;
+   cshanty::PostIncStmtNode *				transIncStmt;
+   cshanty::ReceiveStmtNode *				transRecieveStmt;
+   cshanty::ReportStmtNode *				transReportStmt;
+   cshanty::ReturnStmtNode *				transReturnStmt;
+   cshanty::WhileStmtNode *					transWhileStmt;
+   cshanty::BoolTypeNode *					transBoolType;
+   cshanty::IntTypeNode *					transIntType;
+   cshanty::RecordTypeNode *				transRecordType;
+   cshanty::StringTypeNode *				transStringType;
+   cshanty::VoidTypeNode *					transVoidType;
+   cshanty::ProgramNode *					transProgram;
+
+
 }
 
 %define parse.assert
@@ -137,6 +184,52 @@ project)
 %type <transType>       type
 %type <transLVal>       lval
 %type <transID>         id
+%type <transExp>		exp
+%type <transStmt>		stmt
+%type <transAssignExp>	assignExp
+%type	<transStmt;
+%type	<transCallExp;
+%type	<transAnd;
+%type	<transDivide;
+%type	<transEquals;
+%type	<transGreaterEq;
+%type	<transGreater;
+%type	<transLessEq;
+%type	<transLess;
+%type	<transMinus;
+%type	<transNotEquals;
+%type	<transOr;
+%type	<transPlus;
+%type	<transTimes;
+%type	<transID;
+%type	<transIndex;
+%type	<transNeg;
+%type	<transNot;
+%type	<transFnDecl;
+%type	<transRecordTypeDecl;
+%type	<transFormalDecl;
+%type	<transBinaryExp;
+%type	<transFalse;
+%type	<transIntLit;
+%type	<transStrLit;
+%type	<transTrue;
+%type	<transUnaryExp;
+%type	<transAssignStmt;
+%type	<transCallStmt;
+%type	<transIfElseStmt;
+%type	<transIfStmt;
+%type	<transPostDecStmt;
+%type				transIncStmt;
+%type			transRecieveStmt;
+%type				transReportStmt;
+%type				transReturnStmt;
+%type					transWhileStmt;
+%type				transBoolType;
+%type					transIntType;
+%type				transRecordType;
+%type				transStringType;
+%type					transVoidType;
+%type					transProgram;
 
 
 %right ASSIGN
@@ -183,6 +276,7 @@ recordDecl	: RECORD id OPEN varDeclList CLOSE
 		{
 			//UNSURE how to do list
 			$$ = new RecordTypeNode($1->pos(), $2);
+			
 		}
 
 varDecl 	: type id SEMICOL 
@@ -197,7 +291,7 @@ varDeclList     : varDecl
 			}
 		| varDeclList varDecl 
 			{
-				Position* p = new Position($1->pos(), $2->pos());
+				Position * p = new Position($1->pos(), $2->pos());
 				$$ = new DeclNode(p);
 			}
 
@@ -296,9 +390,10 @@ stmt		: varDecl
 
 exp		: assignExp 
 			{
-				LValNode* myLVal($1->pos());
-				ExpNode* myExpNode($1->pos());
-				$$ = new AssignExpNode($1->pos(), myLVal, myExpNode);
+				$$ = $1;
+				//LValNode* myLVal($1->pos());
+				//ExpNode* myExpNode($1->pos());
+				//$$ = new AssignExpNode($1->pos(), myLVal, myExpNode);
 			} 
 		| exp MINUS exp 
 			{ 

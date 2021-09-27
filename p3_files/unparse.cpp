@@ -40,6 +40,14 @@ void ProgramNode::unparse(std::ostream& out, int indent){
 	}
 }
 
+void AssignExpNode::unparse(std::ostream& out, int indent){
+	doIndent(out, indent);
+	this->MyLVal->unparse(out, 0);
+	out << "=";
+	this->MyExp->unparse(out, 0);
+	out << ";\n";
+}
+
 void VarDeclNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
 	this->myType->unparse(out, 0);

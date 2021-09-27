@@ -48,6 +48,13 @@ void AssignExpNode::unparse(std::ostream& out, int indent){
 	out << ";\n";
 }
 
+void BinaryExpNode::unparse(std::ostream& out, int indent){
+	doIndent(out, indent);
+	this->MyLHS->unparse(out, 0);
+	//how do I say which node goes here?
+	this->MyRHS->unparse(out, 0);
+}
+
 void VarDeclNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
 	this->myType->unparse(out, 0);
@@ -62,6 +69,62 @@ void IDNode::unparse(std::ostream& out, int indent){
 
 void IntTypeNode::unparse(std::ostream& out, int indent){
 	out << "int";
+}
+
+void AndNode::unparse(std::ostream& out, int indent){
+	out << "&&";
+}
+
+void DivideNode::unparse(std::ostream& out, int indent){
+	out << "/";
+}
+
+void EqualsNode::unparse(std::ostream& out, int indent){
+	out << "==";
+}
+
+void GreaterEqNode::unparse(std::ostream& out, int indent){
+	out << ">=";
+}
+
+void GreaterNode::unparse(std::ostream& out, int indent){
+	out << ">";
+}
+
+void LessEqNode::unparse(std::ostream& out, int indent){
+	out << "<=";
+}
+
+void LessNode::unparse(std::ostream& out, int indent){
+	out << "<";
+}
+
+void MinusNode::unparse(std::ostream& out, int indent){
+	out << "-";
+}
+
+void NotEqualsNode::unparse(std::ostream& out, int indent){
+	out << "!=";
+}
+
+void OrNode::unparse(std::ostream& out, int indent){
+	out << "||";
+}
+
+void PlusNode::unparse(std::ostream& out, int indent){
+	out << "+";
+}
+
+void TimesNode::unparse(std::ostream& out, int indent){
+	out << "*";
+}
+
+void IndexNode::unparse(std::ostream& out, int indent){
+	//MyId1->unparse(out, 0);
+	out << "[";
+	//MyId2->unparse(out, 0);
+	out << "]";
+	out << ";\n";
 }
 
 } // End namespace cshanty

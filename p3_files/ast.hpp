@@ -202,8 +202,8 @@ class ReceiveStmtNode : public StmtNode{
 	void unparse(std::ostream& out, int indent);
 };
 
-class ReportsStmtNode : public StmtNode{
-	ReportsStmtNode(Position* p, ExpNode* exp) : StmtNode(p){ }
+class ReportStmtNode : public StmtNode{
+	ReportStmtNode(Position* p, ExpNode* exp) : StmtNode(p){ }
 	void unparse(std::ostream& out, int indent);
 };
 

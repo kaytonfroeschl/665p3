@@ -220,7 +220,7 @@ stmt		: varDecl { }
 		| callExp SEMICOL { }
 
 exp		: assignExp { } 
-		| exp MINUS exp { $$ = $1 - $3; } //these are not correct -----
+		| exp MINUS exp { $$ = $1 - $3; }
 		| exp PLUS exp { $$ = $1 + $3; }
 		| exp TIMES exp { $$ = $1 * $3; }
 		| exp DIVIDE exp  { if ($3 == 0) {
@@ -252,7 +252,7 @@ term 		: lval { $$ = new LValNode($1->pos()); }
 		| STRLITERAL { $$ = new StrLItNode($1->pos(), $1->value); }
 		| TRUE { }
 		| FALSE { }
-		| LPAREN exp RPAREN { $$ = ($2); }
+		| LPAREN exp RPAREN { $$ = $2; }
 		| callExp { }
 
 lval		: id { $$ = $1; }

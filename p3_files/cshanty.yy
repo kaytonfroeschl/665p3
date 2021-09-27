@@ -207,7 +207,7 @@ stmtList 	: /* epsilon */ { }
 		| stmtList stmt { }
 
 stmt		: varDecl { }
-		| assignExp SEMICOL { }
+		| assignExp SEMICOL { $$ = $1 END}
 		| lval DEC SEMICOL { }
 		| lval INC SEMICOL { }
 		| RECEIVE lval SEMICOL { }
@@ -223,33 +223,21 @@ exp		: assignExp { }
 		| exp MINUS exp { $$ = $1 - $3; } //these are not correct -----
 		| exp PLUS exp { $$ = $1 + $3; }
 		| exp TIMES exp { $$ = $1 * $3; }
-		| exp DIVIDE exp { $$ = $1 / $3; }
+		| exp DIVIDE exp  { if ($3 == 0) {
+ 							printf("divide by zero\n");
+ 							$$ = 0; } 
+							else {$$ = $1 / $3;} }
 		| exp AND exp { $$ = $1 && $3; }
 		| exp OR exp { $$ = $1 || $3; }
 		| exp EQUALS exp { $$ = $1 == $3; }
-		| exp NOTEQUALS exp
-	  	  {
-			$$ = $1 != $3;
-		  }
-		| exp GREATER exp
-	  	  {
-			$$ = $1 > $3;
-		  }
-		| exp GREATEREQ exp
-	  	  {
-			$$ = $1 >= $3;
-		  }
-		| exp LESS exp
-	  	  {
-			$$ = $1 < $3;
-		  }
-		| exp LESSEQ exp
-	  	  {
-			$$ = $1 <= $3; //---------- from here
-		  }
-		| NOT exp { }
-		| MINUS term { }
-		| term { }
+		| exp NOTEQUALS exp { $$ = $1 != $3; }
+		| exp GREATER exp { $$ = $1 > $3; }
+		| exp GREATEREQ exp { $$ = $1 >= $3; }
+		| exp LESS exp { $$ = $1 < $3; }
+		| exp LESSEQ exp { $$ = $1 <= $3; }
+		| NOT exp { $$ = !$1; }
+		| MINUS term { $$ = -$1; }
+		| term { $$ = $1; }
 
 assignExp	: lval ASSIGN exp { }
 

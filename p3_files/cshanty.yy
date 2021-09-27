@@ -231,7 +231,7 @@ stmtList 	: /* epsilon */ { $$ = new std::list<StmtNode*>(); }
 
 stmt		: varDecl 
 			{
-				//FILL OUT
+				$$ = new DeclNode($1->pos());
 			}
 		| assignExp SEMICOL 
 			{
@@ -283,7 +283,9 @@ stmt		: varDecl
 
 exp		: assignExp 
 			{
-				//no idea?????
+				LValNode* myLVal($1->pos());
+				ExpNode* myExpNode($1->pos());
+				$$ = new AssignExpNode($1->pos(), myLVal, myExpNode);
 			} 
 		| exp MINUS exp 
 			{ 
@@ -392,7 +394,7 @@ term 		: lval { $$ = new LValNode($1->pos()); }
 		| TRUE { $$ = new TrueNode($1->pos()); }
 		| FALSE { $$ = new FalseNode($1->pos()); }
 		| LPAREN exp RPAREN { $$ = $2; }
-		| callExp { }
+		| callExp { //unsure }
 
 lval		: id { $$ = $1; }
 		| id LBRACE id RBRACE 

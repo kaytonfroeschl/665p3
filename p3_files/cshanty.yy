@@ -320,11 +320,25 @@ assignExp	: lval ASSIGN exp
 				$$ = new AssignExpNode(p, $1, $3);
 			}
 
-callExp		: id LPAREN RPAREN { }
-		| id LPAREN actualsList RPAREN { }
+callExp		: id LPAREN RPAREN 
+			{
+				cList = new std::list<ExpNode*>();
+				$$ = new CallExpNode($1->pos(), $1, cList);
+			}
+		| id LPAREN actualsList RPAREN 
+			{
+				Position* p = new Position($1->pos(), $3->pos());
+				$$ = new CallExpNode(p, $1, $3);
+			}
 
-actualsList	: exp { }
-		| actualsList COMMA exp { }
+actualsList	: exp 
+			{
+
+			}
+		| actualsList COMMA exp 
+			{
+				
+			}
 
 term 		: lval { $$ = new LValNode($1->pos()); }
 		| INTLITERAL { $$ = new IntLitNode($1->pos(), $1->value); }

@@ -205,7 +205,10 @@ fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE
 				SmtList = new std::list<StmtList*>* SList(p);
 				$$ = new FnDeclNode(p, $1, $2, FormalDeclList, SmtList);
 			}
-		| type id LPAREN formals RPAREN OPEN stmtList CLOSE { }
+		| type id LPAREN formals RPAREN OPEN stmtList CLOSE 
+			{
+
+			}
 
 formals 	: formalDecl { }
 		| formals COMMA formalDecl { }
@@ -216,11 +219,11 @@ formalDecl 	: type id
 		$$ = new FormalDeclNode(p, $1, $2);
 	}
 
-stmtList 	: /* epsilon */ { }
+stmtList 	: /* epsilon */ { $$ = new std::list<StmtNode*>(); }
 		| stmtList stmt { }
 
 stmt		: varDecl { }
-		| assignExp SEMICOL { $$ = $1 END}
+		| assignExp SEMICOL { $$ = $1; }
 		| lval DEC SEMICOL { }
 		| lval INC SEMICOL { }
 		| RECEIVE lval SEMICOL { }
@@ -311,7 +314,11 @@ exp		: assignExp
 				$$ = $1;
 			}
 
-assignExp	: lval ASSIGN exp { }
+assignExp	: lval ASSIGN exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new AssignExpNode(p, $1, $3);
+			}
 
 callExp		: id LPAREN RPAREN { }
 		| id LPAREN actualsList RPAREN { }

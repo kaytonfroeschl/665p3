@@ -110,8 +110,6 @@ project)
    cshanty::RecordTypeNode *				transRecordType;
    cshanty::StringTypeNode *				transStringType;
    cshanty::VoidTypeNode *					transVoidType;
-   cshanty::ProgramNode *					transProgram;
-
 
 }
 
@@ -187,49 +185,46 @@ project)
 %type <transExp>		exp
 %type <transStmt>		stmt
 %type <transAssignExp>	assignExp
-%type	<transStmt;
-%type	<transCallExp;
-%type	<transAnd;
-%type	<transDivide;
-%type	<transEquals;
-%type	<transGreaterEq;
-%type	<transGreater;
-%type	<transLessEq;
-%type	<transLess;
-%type	<transMinus;
-%type	<transNotEquals;
-%type	<transOr;
-%type	<transPlus;
-%type	<transTimes;
-%type	<transID;
-%type	<transIndex;
-%type	<transNeg;
-%type	<transNot;
-%type	<transFnDecl;
-%type	<transRecordTypeDecl;
-%type	<transFormalDecl;
-%type	<transBinaryExp;
-%type	<transFalse;
-%type	<transIntLit;
-%type	<transStrLit;
-%type	<transTrue;
-%type	<transUnaryExp;
-%type	<transAssignStmt;
-%type	<transCallStmt;
-%type	<transIfElseStmt;
-%type	<transIfStmt;
-%type	<transPostDecStmt;
-%type				transIncStmt;
-%type			transRecieveStmt;
-%type				transReportStmt;
-%type				transReturnStmt;
-%type					transWhileStmt;
-%type				transBoolType;
-%type					transIntType;
-%type				transRecordType;
-%type				transStringType;
-%type					transVoidType;
-%type					transProgram;
+%type <transCallExp>	callExp
+%type <transAnd>		and
+%type <transDivide>		divide
+%type <transEquals>		equals
+%type <transGreaterEq>	greaterEq
+%type <transGreater>	greater
+%type <transLessEq>		lessEq
+%type <transLess>		less
+%type <transMinus>		minus
+%type <transNotEquals>	notEquals
+%type <transOr>			or
+%type <transPlus>		plus
+%type <transTimes>		times
+%type <transIndex>		index
+%type <transNeg>		neg
+%type <transNot>		not
+%type <transFnDecl>		fnDecl
+%type <transRecordTypeDecl> recordTypeDecl
+%type <transFormalDecl>		formalDecl
+%type <transBinaryExp>		binaryExp
+%type <transFalse>			false
+%type <transIntLit>			intLit
+%type <transStrLit>			strLit
+%type <transTrue>			true
+%type <transUnaryExp>		unaryExp
+%type <transAssignStmt>		assignStmt
+%type <transCallStmt>		callStmt
+%type <transIfElseStmt>		ifElseStmt
+%type <transIfStmt>			ifStmt
+%type <transPostDecStmt>	postDecStmt
+%type <transIncStmt>		incStmt
+%type <transRecieveStmt>	recieveStmt
+%type <transReportStmt>		reportStmt
+%type <transReturnStmt>		returnStmt
+%type <transWhileStmt>		whileStmt
+%type <transBoolType>		boolType
+%type <transIntType>		intType
+%type <transRecordType> 	recordType
+%type <transStringType> 	stringType
+%type <transVoidType> 		voidType
 
 
 %right ASSIGN
@@ -360,7 +355,7 @@ stmt		: varDecl
 			}
 		| REPORT exp SEMICOL 
 			{
-				$$ = new ReportsStmtNode($2->pos(), $2);
+				$$ = new ReportStmtNode($2->pos(), $2);
 			}
 		| IF LPAREN exp RPAREN OPEN stmtList CLOSE 
 			{

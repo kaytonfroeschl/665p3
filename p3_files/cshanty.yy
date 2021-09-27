@@ -200,18 +200,24 @@ type 		: INT { $$ = new IntTypeNode($1->pos()); }
 
 fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE 
 			{ 
-				Position* p = new Position($1->pos(), $2->pos(), $3->pos(), $4->pos(),$6->pos());
-				FormalDeclList = new std::list<FormalDeclNode*>* FList(p,$1,$2);
-				SmtList = new std::list<StmtList*>* SList(p);
-				$$ = new FnDeclNode(p, $1, $2, FormalDeclList, SmtList);
+				Position* p = new Position($1->pos(), $2->pos(), $6->pos());
+				EmptyList = new std::list<FormalDeclNode*>();
+				$$ = new FnDeclNode(p, $1, $2, EmptyList, $6);
 			}
 		| type id LPAREN formals RPAREN OPEN stmtList CLOSE 
 			{
-
+				Position* p = new Position($1->pos(), $2->pos(), $4->pos(), $7->pos());
+				$$ = new FnDeclNode(p, $1, $2, $4, $7);
 			}
 
-formals 	: formalDecl { }
-		| formals COMMA formalDecl { }
+formals 	: formalDecl 
+			{
+
+			}
+		| formals COMMA formalDecl 
+			{
+
+			}
 
 formalDecl 	: type id 
 	{ 
@@ -222,8 +228,14 @@ formalDecl 	: type id
 stmtList 	: /* epsilon */ { $$ = new std::list<StmtNode*>(); }
 		| stmtList stmt { }
 
-stmt		: varDecl { }
-		| assignExp SEMICOL { $$ = $1; }
+stmt		: varDecl 
+			{
+				//FILL OUT
+			}
+		| assignExp SEMICOL 
+			{
+				$$ = new AssignStmtNode($1->pos(), $1);
+			}
 		| lval DEC SEMICOL 
 			{
 				$$ = new PosDecStmtNode($1->pos(), $1);

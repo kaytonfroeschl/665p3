@@ -48,6 +48,38 @@ void AssignExpNode::unparse(std::ostream& out, int indent){
 	out << ";\n";
 }
 
+void BinaryExpNode::unparse(std::ostream& out, int indent){
+	doIndent(out, indent);
+	this->MyLHS->unparse(out,0);
+	out<<" ";
+	this->MyRHS->unparse(out,0);
+	out<<";\n";
+}
+
+/*void CallExpNode::unparse(std::ostream& out, int indent){
+	doIndent(out, indent);
+	this->MyId->unparse(out,0);
+	out<<"(";
+	
+	out<<")";
+}*/
+
+void IntLitNode::unparse(std::ostream& out, int indent){
+	out<<this->MyInt;
+}
+
+void StrLitNode::unparse(std::ostream& out, int indent){
+	out<<this->MyString;
+}
+
+void TrueNode::unparse(std::ostream& out, int indent){
+	out<<"True";
+}
+
+void FalseNode::unparse(std::ostream& out, int indent){
+	out<<"False";
+}
+
 void VarDeclNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
 	this->myType->unparse(out, 0);

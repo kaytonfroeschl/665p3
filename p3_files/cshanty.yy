@@ -174,10 +174,12 @@ decl 		: varDecl
 		  }
 		| fnDecl 
 		  { 
-			//$$ = new DeclNode($1->pos()); UNSURE
+			$$ = new DeclNode($1->pos()); //UNSURE
 		  }
-		| recordDecl { //$$ = new DeclNode($1->pos()); UNSURE 
-		}
+		| recordDecl 
+			{
+				$$ = new DeclNode($1->pos()); //UNSURE
+			}
 
 recordDecl	: RECORD id OPEN varDeclList CLOSE 
 		{

@@ -224,16 +224,49 @@ stmtList 	: /* epsilon */ { $$ = new std::list<StmtNode*>(); }
 
 stmt		: varDecl { }
 		| assignExp SEMICOL { $$ = $1; }
-		| lval DEC SEMICOL { }
-		| lval INC SEMICOL { }
-		| RECEIVE lval SEMICOL { }
-		| REPORT exp SEMICOL { }
-		| IF LPAREN exp RPAREN OPEN stmtList CLOSE { }
-		| IF LPAREN exp RPAREN OPEN stmtList CLOSE ELSE OPEN stmtList CLOSE { }
-		| WHILE LPAREN exp RPAREN OPEN stmtList CLOSE { }
-		| RETURN exp SEMICOL { }
-		| RETURN SEMICOL { }
-		| callExp SEMICOL { }
+		| lval DEC SEMICOL 
+			{
+				$$ = new PosDecStmtNode($1->pos(), $1);
+			}
+		| lval INC SEMICOL 
+			{
+				$$ = new PosIncStmtNode($1->pos(), $1);
+			}
+		| RECEIVE lval SEMICOL 
+			{
+				$$ = new ReceiveStmtNode($1->pos(), $2);
+			}
+		| REPORT exp SEMICOL 
+			{
+				$$ = new ReportsStmtNode($2->pos(), $2);
+			}
+		| IF LPAREN exp RPAREN OPEN stmtList CLOSE 
+			{
+				Position* p = new Position($3->pos(), $6->pos());
+				$$ = new IfStmtNode(p, $3, $6);
+			}
+		| IF LPAREN exp RPAREN OPEN stmtList CLOSE ELSE OPEN stmtList CLOSE 
+			{
+				Position* p = new Position($3->pos(), $6->pos(), $10->pos());
+				$$ = new IfElseStmtNode(p, $3, $6, $10);
+			}
+		| WHILE LPAREN exp RPAREN OPEN stmtList CLOSE 
+			{
+				Position* p = new Position($3->pos(), $6->pos());
+				$$ = new WhileStmtNode(p, $3, $6);
+			}
+		| RETURN exp SEMICOL 
+			{
+				$$ = new ReturnStmtNode($2->pos(), $2);
+			}
+		| RETURN SEMICOL 
+			{
+				//$$ = $1; UNSURE
+			}
+		| callExp SEMICOL 
+			{
+				$$ = new CallStmtNode($1->pos(), $1);
+			}
 
 exp		: assignExp 
 			{

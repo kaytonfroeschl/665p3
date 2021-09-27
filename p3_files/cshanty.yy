@@ -191,8 +191,15 @@ varDecl 	: type id SEMICOL
 		    $$ = new VarDeclNode(p, $1, $2);
 		  }
 
-varDeclList     : varDecl { }
-		| varDeclList varDecl { }
+varDeclList     : varDecl 
+			{
+				$$ = new std::list<VarDeclNode*>();
+			}
+		| varDeclList varDecl 
+			{
+				Position* p = new Position($1->pos(), $2->pos());
+				$$ = new DeclNode(p);
+			}
 
 type 		: INT { $$ = new IntTypeNode($1->pos()); }
 		| BOOL { $$ = new BoolTypeNode($1->pos()); }
@@ -214,11 +221,12 @@ fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE
 
 formals 	: formalDecl 
 			{
-
+				$$ = new DeclNode($1->pos());
 			}
 		| formals COMMA formalDecl 
 			{
-
+				Position* p = new Position($1->pos(), $3->pos());
+				$$ = new DeclNode(p);
 			}
 
 formalDecl 	: type id 
@@ -228,7 +236,11 @@ formalDecl 	: type id
 	}
 
 stmtList 	: /* epsilon */ { $$ = new std::list<StmtNode*>(); }
-		| stmtList stmt { }
+		| stmtList stmt 
+			{
+				Position* p = new Position($1->pos(), $2->pos());
+				$$ = new StmtNode(p);
+			}
 
 stmt		: varDecl 
 			{
@@ -382,11 +394,12 @@ callExp		: id LPAREN RPAREN
 
 actualsList	: exp 
 			{
-
+				$$ = new ExpNode($1->pos());
 			}
 		| actualsList COMMA exp 
 			{
-
+				Position* p = new Position($1->pos(), $3->pos());
+				$$ = new ExpNode(p);
 			}
 
 term 		: lval { $$ = new LValNode($1->pos()); }

@@ -176,12 +176,13 @@ decl 		: varDecl
 		  { 
 			//$$ = new DeclNode($1->pos()); UNSURE
 		  }
-		| recordDecl { //$$ = new DeclNode($1->pos()); UNSURE }
+		| recordDecl { //$$ = new DeclNode($1->pos()); UNSURE 
+		}
 
 recordDecl	: RECORD id OPEN varDeclList CLOSE 
 		{
-			//FILL OUT
-			$$ = new RecordTypeNode($1, $2);
+			//UNSURE how to do list
+			$$ = new RecordTypeNode($1->pos(), $2);
 		}
 
 varDecl 	: type id SEMICOL 
@@ -394,7 +395,8 @@ term 		: lval { $$ = new LValNode($1->pos()); }
 		| TRUE { $$ = new TrueNode($1->pos()); }
 		| FALSE { $$ = new FalseNode($1->pos()); }
 		| LPAREN exp RPAREN { $$ = $2; }
-		| callExp { //unsure }
+		| callExp { //unsure 
+		}
 
 lval		: id { $$ = $1; }
 		| id LBRACE id RBRACE 

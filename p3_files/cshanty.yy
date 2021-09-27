@@ -181,6 +181,7 @@ decl 		: varDecl
 recordDecl	: RECORD id OPEN varDeclList CLOSE 
 		{
 			//FILL OUT
+			$$ = new RecordTypeNode($1, $2);
 		}
 
 varDecl 	: type id SEMICOL 

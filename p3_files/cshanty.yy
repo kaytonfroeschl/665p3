@@ -251,12 +251,13 @@ fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE
 
 formals 	: formalDecl
 			{
-				$$ = new FormalDeclNode($1->pos());
+	  	  		$$ = $1;
 			}
 		| formals COMMA formalDecl
 			{
-				Position* p = new Position($1->pos(), $3->pos());
-				$$ = new DeclNode(p);
+				$$ = $1;
+				DeclNode* decNode = $3;
+				$$->push_back(decNode);
 			}
 
 formalDecl 	: type id
@@ -414,7 +415,7 @@ assignExp	: lval ASSIGN exp
 
 callExp		: id LPAREN RPAREN
 			{
-				$$ = new CallExpNode($1->pos(), $1, new std::list<ExpNode * >());
+				$$ = new CallExpNode($1->pos(), $1, nullptr);
 			}
 		| id LPAREN actualsList RPAREN
 			{
@@ -424,12 +425,15 @@ callExp		: id LPAREN RPAREN
 
 actualsList	: exp
 			{
-				$$ = new ExpNode($1->pos());
+				ExpNode* expNode = $1; 
+				$$->push_back(expNode);
+
 			}
 		| actualsList COMMA exp
 			{
-				Position* p = new Position($1->pos(), $3->pos());
-				$$ = new ExpNode(p);
+				$$ = $1;
+				ExpNode* expNode = $3;
+				$$->push_back(expNode);
 			}
 
 

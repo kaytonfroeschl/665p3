@@ -112,11 +112,11 @@ void IfElseStmtNode::unparse(std::ostream& out, int indent){
 	out<<"if (";
 	this->MyExp->unparse(out,0);
 	out<<"){\n";
-	for(auto element : myTBranch*){
+	for(auto element : *myTBranch){
 		element->unparse(out, 0);
 	}
 	out<<"else {\n";
-	for(auto element : myRBranch*){
+	for(auto element : *myRBranch){
 		element->unparse(out, 0);
 	}
 	out<<"}\n";
@@ -127,7 +127,7 @@ void IfStmtNode::unparse(std::ostream& out, int indent){
 	out<<"if (";
 	this->MyExp->unparse(out, 0);
 	out<<"){\n";
-	for(auto element : myList*){
+	for(auto element : *myList){
 		element->unparse(out, 0);
 	}
 	out<<"}\n";	
@@ -154,7 +154,7 @@ void WhileStmtNode::unparse(std::ostream& out, int indent){
 	out<<"while(";
 	this->MyExp->unparse(out,0);
 	out<<"){\n";
-	for(auto element : my_List){
+	for(auto element : *my_List){
 		element->unparse(out,0);
 	}
 	out<<"}\n";
@@ -269,11 +269,11 @@ void FnDeclNode::unparse(std::ostream& out, int indent){
 	out<<" ";
 	out<<this->myId;
 	out<<"(";
-	for(auto element : MyFormalList*){
+	for(auto element : *MyFormalList){
 		element->unparse(out,0);
 	}
 	out<<"){\n";
-	for(auto element : MyStmtList*){
+	for(auto element : *MyStmtList){
 		element->unparse(out,0);
 	}
 	out<<"}\n";

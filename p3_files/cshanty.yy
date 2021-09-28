@@ -235,14 +235,9 @@ type 		: INT { $$ = new IntTypeNode($1->pos()); }
 
 fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE
 			{
-<<<<<<< HEAD
 				Position* p = new Position($1->pos(), $2->pos(), $6->pos());
 				$$ = new FnDeclNode(p, $1, $2, $6);
-=======
-				Position* p = new Position($1->pos(), $7->pos());
-				EmptyList = new std::list<FormalDeclNode*>();
-				$$ = new FnDeclNode(p, $1, $2, EmptyList, $6);
->>>>>>> 6724eebc6eb6603230dbd2654180bcbc94aca33c
+
 			}
 		| type id LPAREN formals RPAREN OPEN stmtList CLOSE
 			{

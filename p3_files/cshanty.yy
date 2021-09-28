@@ -251,7 +251,11 @@ fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE
 
 formals 	: formalDecl
 			{
+<<<<<<< HEAD
 	  	  		$$ = $1;
+=======
+				$$ = $1;
+>>>>>>> 61420addececdb362b3b43b36448856ba9d88675
 			}
 		| formals COMMA formalDecl
 			{
@@ -269,8 +273,9 @@ formalDecl 	: type id
 stmtList 	: /* epsilon */ { $$ = new std::list<StmtNode*>(); }
 		| stmtList stmt
 			{
-				Position* p = new Position($1->pos(), $2->pos());
-				$$ = new StmtNode(p);
+				$$ = $1;
+				VarDeclNode * stmtNode = $2;
+				$$->push_back(stmtNode);
 			}
 
 stmt		: varDecl
@@ -283,11 +288,11 @@ stmt		: varDecl
 			}
 		| lval DEC SEMICOL
 			{
-				$$ = new PosDecStmtNode($1->pos(), $1);
+				$$ = new PostDecStmtNode($1->pos(), $1);
 			}
 		| lval INC SEMICOL
 			{
-				$$ = new PosIncStmtNode($1->pos(), $1);
+				$$ = new PostIncStmtNode($1->pos(), $1);
 			}
 		| RECEIVE lval SEMICOL
 			{

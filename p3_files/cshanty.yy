@@ -67,50 +67,14 @@ project)
    cshanty::IDNode *                       transID;
    cshanty::LValNode *                     transLVal;
    cshanty::ExpNode *					   transExp;
-   cshanty::AssignExpNode *				   transAssignExp;
    cshanty::StmtNode *					   transStmt;
    cshanty::CallExpNode *				   transCallExp;
-   cshanty::AndNode *					   transAnd;
-   cshanty::DivideNode *					transDivide;
-   cshanty::EqualsNode *					transEquals;
-   cshanty::GreaterEqNode *					transGreaterEq;
-   cshanty::GreaterNode *					transGreater;
-   cshanty::LessEqNode *					transLessEq;
-   cshanty::LessNode *						transLess;
-   cshanty::MinusNode *						transMinus;
-   cshanty::NotEqualsNode *					transNotEquals;
-   cshanty::OrNode *						transOr;
-   cshanty::PlusNode *						transPlus;
-   cshanty::TimesNode *						transTimes;
-   cshanty::IDNode *						transID;
-   cshanty::IndexNode *						transIndex;
-   cshanty::NegNode *						transNeg;
-   cshanty::NotNode *						transNot;
    cshanty::FnDeclNode *					transFnDecl;
-   cshanty::RecordTypeDeclNode *			transRecordTypeDecl;
    cshanty::FormalDecl *					transFormalDecl;
    cshanty::BinaryExpNode *					transBinaryExp;
-   cshanty::FalseNode *						transFalse;
-   cshanty::IntLitNode *					transIntLit;
-   cshanty::StrLitNode *					transStrLit;
-   cshanty::TrueNode *						transTrue;
    cshanty::UnaryExpNode *					transUnaryExp;
-   cshanty::AssignStmtNode *				transAssignStmt;
    cshanty::CallStmtNode *					transCallStmt;
-   cshanty::IfElseStmtNode *				transIfElseStmt;
-   cshanty::IfStmtNode *					transIfStmt;
    cshanty::PostDecStmtNode *				transPostDecStmt;
-   cshanty::PostIncStmtNode *				transIncStmt;
-   cshanty::ReceiveStmtNode *				transRecieveStmt;
-   cshanty::ReportStmtNode *				transReportStmt;
-   cshanty::ReturnStmtNode *				transReturnStmt;
-   cshanty::WhileStmtNode *					transWhileStmt;
-   cshanty::BoolTypeNode *					transBoolType;
-   cshanty::IntTypeNode *					transIntType;
-   cshanty::RecordTypeNode *				transRecordType;
-   cshanty::StringTypeNode *				transStringType;
-   cshanty::VoidTypeNode *					transVoidType;
-
 }
 
 %define parse.assert
@@ -186,45 +150,12 @@ project)
 %type <transStmt>		stmt
 %type <transAssignExp>	assignExp
 %type <transCallExp>	callExp
-%type <transAnd>		and
-%type <transDivide>		divide
-%type <transEquals>		equals
-%type <transGreaterEq>	greaterEq
-%type <transGreater>	greater
-%type <transLessEq>		lessEq
-%type <transLess>		less
-%type <transMinus>		minus
-%type <transNotEquals>	notEquals
-%type <transOr>			or
-%type <transPlus>		plus
-%type <transTimes>		times
-%type <transIndex>		index
-%type <transNeg>		neg
-%type <transNot>		not
 %type <transFnDecl>		fnDecl
-%type <transRecordTypeDecl> recordTypeDecl
 %type <transFormalDecl>		formalDecl
 %type <transBinaryExp>		binaryExp
-%type <transFalse>			false
-%type <transIntLit>			intLit
-%type <transStrLit>			strLit
-%type <transTrue>			true
 %type <transUnaryExp>		unaryExp
-%type <transAssignStmt>		assignStmt
 %type <transCallStmt>		callStmt
-%type <transIfElseStmt>		ifElseStmt
-%type <transIfStmt>			ifStmt
 %type <transPostDecStmt>	postDecStmt
-%type <transIncStmt>		incStmt
-%type <transRecieveStmt>	recieveStmt
-%type <transReportStmt>		reportStmt
-%type <transReturnStmt>		returnStmt
-%type <transWhileStmt>		whileStmt
-%type <transBoolType>		boolType
-%type <transIntType>		intType
-%type <transRecordType> 	recordType
-%type <transStringType> 	stringType
-%type <transVoidType> 		voidType
 
 
 %right ASSIGN
@@ -266,13 +197,13 @@ decl 		: varDecl
 		  }
 		| recordDecl 
 			{
-				$$ = new DeclNode($1->pos()); //UNSURE
+				//$$ = new DeclNode($1->pos()); //UNSURE
 			}
 
 recordDecl	: RECORD id OPEN varDeclList CLOSE 
 		{
 			//UNSURE how to do list
-			$$ = new RecordTypeNode($1->pos(), $2);
+			//$$ = new RecordTypeNode($1->pos(), $2);
 			
 		}
 

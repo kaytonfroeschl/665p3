@@ -40,6 +40,14 @@ void ProgramNode::unparse(std::ostream& out, int indent){
 	}
 }
 
+void ExpNode::unparse(std::ostream& out, int indent){
+	doIndent(out, indent);
+	this->MyLVal->unparse(out, 0);
+	out << "=";
+	this->MyExp->unparse(out, 0);
+	out << ";\n";
+}
+
 void AssignExpNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
 	this->MyLVal->unparse(out, 0);
@@ -56,13 +64,17 @@ void BinaryExpNode::unparse(std::ostream& out, int indent){
 	out<<";\n";
 }
 
-/*void CallExpNode::unparse(std::ostream& out, int indent){
+void CallExpNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
-	this->MyId->unparse(out,0);
-	out<<"(";
+	this->MyId->unparse(out, 0);
+	out << "(";
+	/*for(int i = 0; i < this->MyList.length(); i++)
+	{
+		this->MyList[i]->unparse(out, 0);
+	}*/
 	
-	out<<")";
-}*/
+	out << ");\n";
+}
 
 void IntLitNode::unparse(std::ostream& out, int indent){
 	out<<this->MyInt;
@@ -78,17 +90,6 @@ void TrueNode::unparse(std::ostream& out, int indent){
 
 void FalseNode::unparse(std::ostream& out, int indent){
 	out<<"False";
-	//this->MyLHS->unparse(out, 0);
-	//how do I say which node goes here?
-	//this->MyRHS->unparse(out, 0);
-}
-
-void CallExpNode::unparse(std::ostream& out, int indent){
-	doIndent(out, indent);
-	this->MyId->unparse(out, 0);
-	out << "(";
-	//this->myList->unparse(out, 0);
-	out << ");\n";
 }
 
 void VarDeclNode::unparse(std::ostream& out, int indent){

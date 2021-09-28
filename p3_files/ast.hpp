@@ -19,6 +19,7 @@ class TypeNode;
 class StmtNode;
 class IDNode;
 class LValNode;
+class FormalDeclNode;
 
 class ASTNode{
 public:
@@ -40,7 +41,7 @@ protected:
 	ExpNode(Position * p) : ASTNode(p){ }
 };
 
-/** 
+/**
 * \class ProgramNode
 * Class that contains the entire abstract syntax tree for a program.
 * Note the list of declarations encompasses all global declarations
@@ -62,7 +63,7 @@ public:
 };
 
 /**  \class TypeNode
-* Superclass of nodes that indicate a data type. For example, in 
+* Superclass of nodes that indicate a data type. For example, in
 * the declaration "int a", the int part is the type node (a is an IDNode
 * and the whole thing is a DeclNode).
 **/
@@ -72,8 +73,8 @@ protected:
 	}
 public:
 	virtual void unparse(std::ostream& out, int indent) = 0;
-	//virtual bool isRef(TypeNode* type); 
-	//TODO: consider adding an isRef to use in unparse to 
+	//virtual bool isRef(TypeNode* type);
+	//TODO: consider adding an isRef to use in unparse to
 	// indicate if this is a reference type
 };
 
@@ -96,7 +97,7 @@ private:
 };
 
 class CallExpNode : public ExpNode {
-public: 
+public:
 	CallExpNode(Position * p, IDNode* id, std::list<ExpNode*>* MyList) : ExpNode(p) { }
 	void unparse(std::ostream& out, int indent) override = 0;
 private:
@@ -127,13 +128,13 @@ private:
 };
 
 class TrueNode : public ExpNode{
-	public: 
+	public:
 		TrueNode(Position* p) : ExpNode(p){ }
 		void unparse(std::ostream& out, int indent);
 };
 
 class FalseNode : public ExpNode{
-	public: 
+	public:
 		FalseNode(Position* p) : ExpNode(p){ }
 		void unparse(std::ostream& out, int indent);
 };
@@ -163,8 +164,8 @@ private:
 };
 
 /** \class DeclNode
-* Superclass for declarations (i.e. nodes that can be used to 
-* declare a struct, function, variable, etc).  This base class will 
+* Superclass for declarations (i.e. nodes that can be used to
+* declare a struct, function, variable, etc).  This base class will
 **/
 class DeclNode : public StmtNode{
 public:
@@ -173,7 +174,7 @@ public:
 };
 
 class IfElseStmtNode : StmtNode{
-	public: 
+	public:
 		IfElseStmtNode(Position* p, ExpNode* exp, std::list<StmtNode> tBranch, std::list<StmtNode*>* fBranch) : StmtNode(p), MyExp(exp) { }
 		void unparse(std::ostream& out, int indent);
 	private:
@@ -183,7 +184,7 @@ class IfElseStmtNode : StmtNode{
 };
 
 class IfStmtNode : public StmtNode{
-	public: 
+	public:
 		IfStmtNode(Position* p, ExpNode* node, std::list<StmtNode*>* sList) : StmtNode(p) { }
 		void unparse(std::ostream& out, int indent);
 	private:
@@ -224,7 +225,7 @@ class ReportStmtNode : public StmtNode{
 };
 
 class WhileStmtNode : public StmtNode{
-	public: 
+	public:
 		WhileStmtNode(Position* p, ExpNode* exp, std::list<StmtNode*>* sList) : StmtNode(p) { }
 		void unparse(std::ostream& out, int indent);
 	private:
@@ -345,11 +346,11 @@ public:
 };
 
 /** An identifier. Note that IDNodes subclass
- * ExpNode because they can be used as part of an expression. 
+ * ExpNode because they can be used as part of an expression.
 **/
 class IDNode : public LValNode{
 public:
-	IDNode(Position * p, std::string nameIn) 
+	IDNode(Position * p, std::string nameIn)
 	: LValNode(p), name(nameIn){ }
 	void unparse(std::ostream& out, int indent);
 private:
@@ -359,7 +360,7 @@ private:
 
 class IndexNode : public LValNode{
 public:
-	IndexNode(Position * p, IDNode* id1, IDNode* id2) 
+	IndexNode(Position * p, IDNode* id1, IDNode* id2)
 	: LValNode(p), MyId1(id1), MyId2(id2){ }
 	void unparse(std::ostream& out, int indent);
 private:
@@ -379,22 +380,22 @@ public:
 	void unparse(std::ostream& out, int indent);
 };
 
- 
-/** A variable declaration. Note that this class is intended to 
+
+/** A variable declaration. Note that this class is intended to
  * represent a global or local variable of any type (including a struct
  * type. Note that this is not intended to represent a declaration of
  * a struct. In other words:
- * struct MyStruct { 
+ * struct MyStruct {
  *   int fieldA;
  * };
  * is NOT a VarDeclNode because it introduces a new datatype, not a new
  * variable (in this case, the example is a StructDeclNode).  * However,
- * struct MyStruct instance; *is* a VarDeclNode, since it introduces a 
- * new variable to the program. 
+ * struct MyStruct instance; *is* a VarDeclNode, since it introduces a
+ * new variable to the program.
 **/
 class VarDeclNode : public DeclNode{
 public:
-	VarDeclNode(Position * p, TypeNode * type, IDNode * id) 
+	VarDeclNode(Position * p, TypeNode * type, IDNode * id)
 	: DeclNode(p), myType(type), myId(id){
 	}
 	void unparse(std::ostream& out, int indent);

@@ -16,7 +16,7 @@
 		class Scanner;
 	}
 
-//The following definition is required when 
+//The following definition is required when
 // we don't use the %locations directive (which we won't)
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -41,14 +41,14 @@
    #include "scanner.hpp"
    #include "tokens.hpp"
 
-  //Request tokens from our scanner member, not 
+  //Request tokens from our scanner member, not
   // from a global function
   #undef yylex
   #define yylex scanner.yylex
 }
 
 /*
-The %union directive is a way to specify the 
+The %union directive is a way to specify the
 set of possible types that might be used as
 translation attributes on a symbol.
 For this project, only terminals have types (we'll
@@ -66,26 +66,28 @@ project)
    cshanty::TypeNode *                     transType;
    cshanty::IDNode *                       transID;
    cshanty::LValNode *                     transLVal;
-   cshanty::ExpNode *					   transExp;
-   cshanty::StmtNode *					   transStmt;
-   cshanty::CallExpNode *				   transCallExp;
-   cshanty::FnDeclNode *					transFnDecl;
-   cshanty::FormalDecl *					transFormalDecl;
-   cshanty::BinaryExpNode *					transBinaryExp;
-   cshanty::UnaryExpNode *					transUnaryExp;
-   cshanty::CallStmtNode *					transCallStmt;
-   cshanty::PostDecStmtNode *				transPostDecStmt;
+   cshanty::ExpNode *					  					 transExp;
+   cshanty::StmtNode *					   				 transStmt;
+   cshanty::CallExpNode *				   				 transCallExp;
+   cshanty::FnDeclNode *									 transFnDecl;
+   cshanty::FormalDeclNode *							 transFormalDecl;
+	 cshanty::list<cshanty::VarDeclNode *> * transVarDeclList;
+	 cshanty::RecordDeclNode *							 transRecordDecl; //all below and potentially this one are probably wrong but make the errors go away for now
+	 cshanty::Term													 transTerm;
+	 cshanty::Formals 											 transFormals;
+	 cshanty::ActualsList							 			 transActualsList;
+	 cshanty::StmtList											 transStmtList;
 }
 
 %define parse.assert
 
-/* Terminals 
+/* Terminals
  *  No need to touch these, but do note the translation type
  *  of each node. Most are just "transToken", which is defined in
  *  the %union above to mean that the token translation is an instance
  *  of cshanty::Token *, and thus has no fields (other than line and column).
  *  Some terminals, like ID, are "transIDToken", meaning the translation
- *  also has a name field. 
+ *  also has a name field.
 */
 %token                   END	   0 "end file"
 %token	<transToken>     AND
@@ -146,16 +148,18 @@ project)
 %type <transType>       type
 %type <transLVal>       lval
 %type <transID>         id
-%type <transExp>		exp
-%type <transStmt>		stmt
+%type <transExp>				exp
+%type <transStmt>				stmt
 %type <transAssignExp>	assignExp
-%type <transCallExp>	callExp
-%type <transFnDecl>		fnDecl
+%type <transCallExp>		callExp
+%type <transFnDecl>			fnDecl
+%type <transTerm>				term
+%type <transVarDeclList> varDeclList
+%type <transFormals>		formals
+%type <transActualsList>	actualsList
+%type <transRecordDecl>	 recordDecl
+%type <transStmtList>			stmtList
 %type <transFormalDecl>		formalDecl
-%type <transBinaryExp>		binaryExp
-%type <transUnaryExp>		unaryExp
-%type <transCallStmt>		callStmt
-%type <transPostDecStmt>	postDecStmt
 
 
 %right ASSIGN
@@ -164,7 +168,7 @@ project)
 %nonassoc LESS GREATER LESSEQ GREATEREQ EQUALS NOTEQUALS
 %left MINUS PLUS
 %left TIMES DIVIDE
-%left NOT 
+%left NOT
 
 %%
 
@@ -174,9 +178,9 @@ program 	: globals
 		  *root = $$;
 		  }
 
-globals 	: globals decl 
-	  	  { 
-	  	  $$ = $1; 
+globals 	: globals decl
+	  	  {
+	  	  $$ = $1;
 	  	  DeclNode * declNode = $2;
 		  $$->push_back(declNode);
 	  	  }
@@ -187,36 +191,36 @@ globals 	: globals decl
 
 decl 		: varDecl
 		  {
-			//Passhthrough rule. This nonterminal is just for 
+			//Passhthrough rule. This nonterminal is just for
 			// grammar structure
-			$$ = $1; 
+			$$ = $1;
 		  }
-		| fnDecl 
-		  { 
-			$$ = new DeclNode($1->pos()); //UNSURE
+		| fnDecl
+		  {
+				$$ = $1;
 		  }
-		| recordDecl 
+		| recordDecl
 			{
-				$$ = new DeclNode($1->pos()); //UNSURE
+				$$ = $1;
 			}
 
-recordDecl	: RECORD id OPEN varDeclList CLOSE 
+recordDecl	: RECORD id OPEN varDeclList CLOSE
 		{
 			Position* p = new Position($2->pos(), $4->pos());
 			$$ = new RecordTypeNode(p, $2);
 		}
 
-varDecl 	: type id SEMICOL 
-		  { 
+varDecl 	: type id SEMICOL
+		  {
 		    Position * p = new Position($1->pos(), $2->pos());
 		    $$ = new VarDeclNode(p, $1, $2);
 		  }
 
-varDeclList     : varDecl 
+varDeclList     : varDecl
 			{
 				$$ = new std::list<VarDeclNode*>();
 			}
-		| varDeclList varDecl 
+		| varDeclList varDecl
 			{
 				Position * p = new Position($1->pos(), $2->pos());
 				$$ = new DeclNode(p);
@@ -228,197 +232,197 @@ type 		: INT { $$ = new IntTypeNode($1->pos()); }
 		| STRING { $$ = new StringTypeNode($1->pos()); }
 		| VOID { $$ = new VoidTypeNode($1->pos()); }
 
-fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE 
-			{ 
+fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE
+			{
 				Position* p = new Position($1->pos(), $2->pos(), $6->pos());
 				EmptyList = new std::list<FormalDeclNode*>();
 				$$ = new FnDeclNode(p, $1, $2, EmptyList, $6);
 			}
-		| type id LPAREN formals RPAREN OPEN stmtList CLOSE 
+		| type id LPAREN formals RPAREN OPEN stmtList CLOSE
 			{
 				Position* p = new Position($1->pos(), $2->pos(), $4->pos(), $7->pos());
 				$$ = new FnDeclNode(p, $1, $2, $4, $7);
 			}
 
-formals 	: formalDecl 
+formals 	: formalDecl
 			{
 				$$ = new DeclNode($1->pos());
 			}
-		| formals COMMA formalDecl 
+		| formals COMMA formalDecl
 			{
 				Position* p = new Position($1->pos(), $3->pos());
 				$$ = new DeclNode(p);
 			}
 
-formalDecl 	: type id 
-	{ 
+formalDecl 	: type id
+	{
 		Position* p = new Position($1->pos(), $2->pos());
 		$$ = new FormalDeclNode(p, $1, $2);
 	}
 
 stmtList 	: /* epsilon */ { $$ = new std::list<StmtNode*>(); }
-		| stmtList stmt 
+		| stmtList stmt
 			{
 				Position* p = new Position($1->pos(), $2->pos());
 				$$ = new StmtNode(p);
 			}
 
-stmt		: varDecl 
+stmt		: varDecl
 			{
 				$$ = new DeclNode($1->pos());
 			}
-		| assignExp SEMICOL 
+		| assignExp SEMICOL
 			{
 				$$ = new AssignStmtNode($1->pos(), $1);
 			}
-		| lval DEC SEMICOL 
+		| lval DEC SEMICOL
 			{
 				$$ = new PosDecStmtNode($1->pos(), $1);
 			}
-		| lval INC SEMICOL 
+		| lval INC SEMICOL
 			{
 				$$ = new PosIncStmtNode($1->pos(), $1);
 			}
-		| RECEIVE lval SEMICOL 
+		| RECEIVE lval SEMICOL
 			{
 				$$ = new ReceiveStmtNode($1->pos(), $2);
 			}
-		| REPORT exp SEMICOL 
+		| REPORT exp SEMICOL
 			{
 				$$ = new ReportStmtNode($2->pos(), $2);
 			}
-		| IF LPAREN exp RPAREN OPEN stmtList CLOSE 
+		| IF LPAREN exp RPAREN OPEN stmtList CLOSE
 			{
 				Position* p = new Position($3->pos(), $6->pos());
 				$$ = new IfStmtNode(p, $3, $6);
 			}
-		| IF LPAREN exp RPAREN OPEN stmtList CLOSE ELSE OPEN stmtList CLOSE 
+		| IF LPAREN exp RPAREN OPEN stmtList CLOSE ELSE OPEN stmtList CLOSE
 			{
 				Position* p = new Position($3->pos(), $6->pos(), $10->pos());
 				$$ = new IfElseStmtNode(p, $3, $6, $10);
 			}
-		| WHILE LPAREN exp RPAREN OPEN stmtList CLOSE 
+		| WHILE LPAREN exp RPAREN OPEN stmtList CLOSE
 			{
 				Position* p = new Position($3->pos(), $6->pos());
 				$$ = new WhileStmtNode(p, $3, $6);
 			}
-		| RETURN exp SEMICOL 
+		| RETURN exp SEMICOL
 			{
 				$$ = new ReturnStmtNode($2->pos(), $2);
 			}
-		| RETURN SEMICOL 
+		| RETURN SEMICOL
 			{
 				//$$ = $1; UNSURE
 			}
-		| callExp SEMICOL 
+		| callExp SEMICOL
 			{
-				$$ = new CallStmtNode($1->pos(), $1);
+				$$ = new CallExpNode($1->pos(), $1);
 			}
 
-exp		: assignExp 
+exp		: assignExp
 			{
 				$$ = $1;
 				//LValNode* myLVal($1->pos());
 				//ExpNode* myExpNode($1->pos());
 				//$$ = new AssignExpNode($1->pos(), myLVal, myExpNode);
-			} 
-		| exp MINUS exp 
-			{ 
+			}
+		| exp MINUS exp
+			{
 				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
 				$$ = new MinusNode(p, $1, $3);
 			}
-		| exp PLUS exp 
-			{ 
+		| exp PLUS exp
+			{
 				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
 				$$ = new PlusNode(p, $1, $3);
 			}
-		| exp TIMES exp 
+		| exp TIMES exp
 			{
 				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
 				$$ = new TimesNode(p, $1, $3);
 			}
-		| exp DIVIDE exp  
+		| exp DIVIDE exp
 			{
 				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
 				$$ = new DivideNode(p, $1, $3);
 			}
-		| exp AND exp 
+		| exp AND exp
 			{
 				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
 				$$ = new AndNode(p, $1, $3);
 			}
-		| exp OR exp 
+		| exp OR exp
 			{
 				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
 				$$ = new OrNode(p, $1, $3);
 			}
-		| exp EQUALS exp 
+		| exp EQUALS exp
 			{
 				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
 				$$ = new EqualsNode(p, $1, $3);
 			}
-		| exp NOTEQUALS exp 
+		| exp NOTEQUALS exp
 			{
 				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
 				$$ = new NotEqualsNode(p, $1, $3);
 			}
-		| exp GREATER exp 
+		| exp GREATER exp
 			{
 				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
 				$$ = new GreaterNode(p, $1, $3);
 			}
-		| exp GREATEREQ exp 
+		| exp GREATEREQ exp
 			{
 				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
 				$$ = new GreaterEqNode(p, $1, $3);
 			}
-		| exp LESS exp 
+		| exp LESS exp
 			{
 				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
 				$$ = new LessNode(p, $1, $3);
 			}
-		| exp LESSEQ exp 
+		| exp LESSEQ exp
 			{
 				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
 				$$ = new LessEqNode(p, $1, $3);
 			}
-		| NOT exp 
+		| NOT exp
 			{
 				Position* p = new Position($1->pos(), $2->pos());
 				$$ = new NotNode(p);
 			}
-		| MINUS term 
-			{ 
+		| MINUS term
+			{
 				Position* p = new Position($1->pos(), $2->pos());
 				$$ = new NegNode(p);
 			}
-		| term 
+		| term
 			{
 				$$ = $1;
 			}
 
-assignExp	: lval ASSIGN exp 
+assignExp	: lval ASSIGN exp
 			{
 				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
 				$$ = new AssignExpNode(p, $1, $3);
 			}
 
-callExp		: id LPAREN RPAREN 
+callExp		: id LPAREN RPAREN
 			{
 				cList = new std::list<ExpNode*>();
 				$$ = new CallExpNode($1->pos(), $1, cList);
 			}
-		| id LPAREN actualsList RPAREN 
+		| id LPAREN actualsList RPAREN
 			{
 				Position* p = new Position($1->pos(), $3->pos());
 				$$ = new CallExpNode(p, $1, $3);
 			}
 
-actualsList	: exp 
+actualsList	: exp
 			{
 				$$ = new ExpNode($1->pos());
 			}
-		| actualsList COMMA exp 
+		| actualsList COMMA exp
 			{
 				Position* p = new Position($1->pos(), $3->pos());
 				$$ = new ExpNode(p);
@@ -431,11 +435,11 @@ term 		: lval { $$ = new LValNode($1->pos()); }
 		| TRUE { $$ = new TrueNode($1->pos()); }
 		| FALSE { $$ = new FalseNode($1->pos()); }
 		| LPAREN exp RPAREN { $$ = $2; }
-		| callExp { //unsure 
+		| callExp { //unsure
 		}
 
 lval		: id { $$ = $1; }
-		| id LBRACE id RBRACE 
+		| id LBRACE id RBRACE
 			{
 				Position* p = new Position($1->pos(), $3->pos());
 				$$ = new LValNode(p);
@@ -444,10 +448,10 @@ lval		: id { $$ = $1; }
 id		: ID
 		  {
 		  Position * pos = $1->pos();
-		  $$ = new IDNode(pos, $1->value()); 
+		  $$ = new IDNode(pos, $1->value());
 		  }
 
-	
+
 %%
 
 void cshanty::Parser::error(const std::string& msg){

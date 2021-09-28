@@ -77,6 +77,7 @@ project)
    cshanty::ExpNode *					   						transTerm;
    std::list<cshanty::FormalDeclNode *> *  transFormals;
    cshanty::RecordTypeDeclNode *   				 transRecordTypeDecl;
+   cshanty::AssignExpNode * transAssignExp;
 }
 
 %define parse.assert
@@ -410,8 +411,7 @@ assignExp	: lval ASSIGN exp
 
 callExp		: id LPAREN RPAREN
 			{
-				//cList = new std::list<ExpNode*>();
-				$$ = new CallExpNode($1->pos(), $1);
+				$$ = new CallExpNode($1->pos(), $1, new std::list<ExpNode * >());
 			}
 		| id LPAREN actualsList RPAREN
 			{
@@ -431,7 +431,7 @@ actualsList	: exp
 
 
 term 		: lval { $$ = new LValNode($1->pos()); }
-		| INTLITERAL { $$ = new IntLitNode($1->pos()); }
+		| INTLITERAL { $$ = new IntLitNode($1->pos(),$1->value); }
 		| STRLITERAL { $$ = new StrLItNode($1->pos(), $1->value); }
 		| TRUE { $$ = new TrueNode($1->pos()); }
 		| FALSE { $$ = new FalseNode($1->pos()); }

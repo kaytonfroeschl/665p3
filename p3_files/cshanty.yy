@@ -250,7 +250,7 @@ fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE
 
 formals 	: formalDecl
 			{
-				$$ = new DeclNode($1->pos());
+				$$ = new FormalDeclNode($1->pos());
 			}
 		| formals COMMA formalDecl
 			{

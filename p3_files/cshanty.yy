@@ -66,6 +66,15 @@ project)
    cshanty::TypeNode *                     transType;
    cshanty::IDNode *                       transID;
    cshanty::LValNode *                     transLVal;
+   cshanty::ExpNode *					   transExp;
+   cshanty::StmtNode *					   transStmt;
+   cshanty::CallExpNode *				   transCallExp;
+   cshanty::FnDeclNode *					transFnDecl;
+   cshanty::FormalDecl *					transFormalDecl;
+   cshanty::BinaryExpNode *					transBinaryExp;
+   cshanty::UnaryExpNode *					transUnaryExp;
+   cshanty::CallStmtNode *					transCallStmt;
+   cshanty::PostDecStmtNode *				transPostDecStmt;
 }
 
 %define parse.assert
@@ -137,6 +146,16 @@ project)
 %type <transType>       type
 %type <transLVal>       lval
 %type <transID>         id
+%type <transExp>		exp
+%type <transStmt>		stmt
+%type <transAssignExp>	assignExp
+%type <transCallExp>	callExp
+%type <transFnDecl>		fnDecl
+%type <transFormalDecl>		formalDecl
+%type <transBinaryExp>		binaryExp
+%type <transUnaryExp>		unaryExp
+%type <transCallStmt>		callStmt
+%type <transPostDecStmt>	postDecStmt
 
 
 %right ASSIGN
@@ -174,11 +193,18 @@ decl 		: varDecl
 		  }
 		| fnDecl 
 		  { 
-			//$$ = new DeclNode($1->pos());
+			$$ = new DeclNode($1->pos()); //UNSURE
 		  }
-		| recordDecl { /* SDD Rules can even be on the same line if you want */ }
+		| recordDecl 
+			{
+				$$ = new DeclNode($1->pos()); //UNSURE
+			}
 
-recordDecl	: RECORD id OPEN varDeclList CLOSE { }
+recordDecl	: RECORD id OPEN varDeclList CLOSE 
+		{
+			Position* p = new Position($2->pos(), $4->pos());
+			$$ = new RecordTypeNode(p, $2);
+		}
 
 varDecl 	: type id SEMICOL 
 		  { 
@@ -186,8 +212,15 @@ varDecl 	: type id SEMICOL
 		    $$ = new VarDeclNode(p, $1, $2);
 		  }
 
-varDeclList     : varDecl { }
-		| varDeclList varDecl { }
+varDeclList     : varDecl 
+			{
+				$$ = new std::list<VarDeclNode*>();
+			}
+		| varDeclList varDecl 
+			{
+				Position * p = new Position($1->pos(), $2->pos());
+				$$ = new DeclNode(p);
+			}
 
 type 		: INT { $$ = new IntTypeNode($1->pos()); }
 		| BOOL { $$ = new BoolTypeNode($1->pos()); }
@@ -195,75 +228,218 @@ type 		: INT { $$ = new IntTypeNode($1->pos()); }
 		| STRING { $$ = new StringTypeNode($1->pos()); }
 		| VOID { $$ = new VoidTypeNode($1->pos()); }
 
-fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE { }
-		| type id LPAREN formals RPAREN OPEN stmtList CLOSE { }
+fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE 
+			{ 
+				Position* p = new Position($1->pos(), $2->pos(), $6->pos());
+				EmptyList = new std::list<FormalDeclNode*>();
+				$$ = new FnDeclNode(p, $1, $2, EmptyList, $6);
+			}
+		| type id LPAREN formals RPAREN OPEN stmtList CLOSE 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $4->pos(), $7->pos());
+				$$ = new FnDeclNode(p, $1, $2, $4, $7);
+			}
 
-formals 	: formalDecl { }
-		| formals COMMA formalDecl { }
+formals 	: formalDecl 
+			{
+				$$ = new DeclNode($1->pos());
+			}
+		| formals COMMA formalDecl 
+			{
+				Position* p = new Position($1->pos(), $3->pos());
+				$$ = new DeclNode(p);
+			}
 
-formalDecl 	: type id { }
+formalDecl 	: type id 
+	{ 
+		Position* p = new Position($1->pos(), $2->pos());
+		$$ = new FormalDeclNode(p, $1, $2);
+	}
 
-stmtList 	: /* epsilon */ { }
-		| stmtList stmt { }
+stmtList 	: /* epsilon */ { $$ = new std::list<StmtNode*>(); }
+		| stmtList stmt 
+			{
+				Position* p = new Position($1->pos(), $2->pos());
+				$$ = new StmtNode(p);
+			}
 
-stmt		: varDecl { }
-		| assignExp SEMICOL { }
-		| lval DEC SEMICOL { }
-		| lval INC SEMICOL { }
-		| RECEIVE lval SEMICOL { }
-		| REPORT exp SEMICOL { }
-		| IF LPAREN exp RPAREN OPEN stmtList CLOSE { }
-		| IF LPAREN exp RPAREN OPEN stmtList CLOSE ELSE OPEN stmtList CLOSE { }
-		| WHILE LPAREN exp RPAREN OPEN stmtList CLOSE { }
-		| RETURN exp SEMICOL { }
-		| RETURN SEMICOL { }
-		| callExp SEMICOL { }
+stmt		: varDecl 
+			{
+				$$ = new DeclNode($1->pos());
+			}
+		| assignExp SEMICOL 
+			{
+				$$ = new AssignStmtNode($1->pos(), $1);
+			}
+		| lval DEC SEMICOL 
+			{
+				$$ = new PosDecStmtNode($1->pos(), $1);
+			}
+		| lval INC SEMICOL 
+			{
+				$$ = new PosIncStmtNode($1->pos(), $1);
+			}
+		| RECEIVE lval SEMICOL 
+			{
+				$$ = new ReceiveStmtNode($1->pos(), $2);
+			}
+		| REPORT exp SEMICOL 
+			{
+				$$ = new ReportStmtNode($2->pos(), $2);
+			}
+		| IF LPAREN exp RPAREN OPEN stmtList CLOSE 
+			{
+				Position* p = new Position($3->pos(), $6->pos());
+				$$ = new IfStmtNode(p, $3, $6);
+			}
+		| IF LPAREN exp RPAREN OPEN stmtList CLOSE ELSE OPEN stmtList CLOSE 
+			{
+				Position* p = new Position($3->pos(), $6->pos(), $10->pos());
+				$$ = new IfElseStmtNode(p, $3, $6, $10);
+			}
+		| WHILE LPAREN exp RPAREN OPEN stmtList CLOSE 
+			{
+				Position* p = new Position($3->pos(), $6->pos());
+				$$ = new WhileStmtNode(p, $3, $6);
+			}
+		| RETURN exp SEMICOL 
+			{
+				$$ = new ReturnStmtNode($2->pos(), $2);
+			}
+		| RETURN SEMICOL 
+			{
+				//$$ = $1; UNSURE
+			}
+		| callExp SEMICOL 
+			{
+				$$ = new CallStmtNode($1->pos(), $1);
+			}
 
-exp		: assignExp { } 
-		| exp MINUS exp { }
-		| exp PLUS exp { }
-		| exp TIMES exp { }
-		| exp DIVIDE exp { }
-		| exp AND exp { }
-		| exp OR exp { }
-		| exp EQUALS exp { }
-		| exp NOTEQUALS exp
-	  	  {
-		  }
-		| exp GREATER exp
-	  	  {
-		  }
-		| exp GREATEREQ exp
-	  	  {
-		  }
-		| exp LESS exp
-	  	  {
-		  }
-		| exp LESSEQ exp
-	  	  {
-		  }
-		| NOT exp { }
-		| MINUS term { }
-		| term { }
+exp		: assignExp 
+			{
+				$$ = $1;
+				//LValNode* myLVal($1->pos());
+				//ExpNode* myExpNode($1->pos());
+				//$$ = new AssignExpNode($1->pos(), myLVal, myExpNode);
+			} 
+		| exp MINUS exp 
+			{ 
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new MinusNode(p, $1, $3);
+			}
+		| exp PLUS exp 
+			{ 
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new PlusNode(p, $1, $3);
+			}
+		| exp TIMES exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new TimesNode(p, $1, $3);
+			}
+		| exp DIVIDE exp  
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new DivideNode(p, $1, $3);
+			}
+		| exp AND exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new AndNode(p, $1, $3);
+			}
+		| exp OR exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new OrNode(p, $1, $3);
+			}
+		| exp EQUALS exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new EqualsNode(p, $1, $3);
+			}
+		| exp NOTEQUALS exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new NotEqualsNode(p, $1, $3);
+			}
+		| exp GREATER exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new GreaterNode(p, $1, $3);
+			}
+		| exp GREATEREQ exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new GreaterEqNode(p, $1, $3);
+			}
+		| exp LESS exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new LessNode(p, $1, $3);
+			}
+		| exp LESSEQ exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new LessEqNode(p, $1, $3);
+			}
+		| NOT exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos());
+				$$ = new NotNode(p);
+			}
+		| MINUS term 
+			{ 
+				Position* p = new Position($1->pos(), $2->pos());
+				$$ = new NegNode(p);
+			}
+		| term 
+			{
+				$$ = $1;
+			}
 
-assignExp	: lval ASSIGN exp { }
+assignExp	: lval ASSIGN exp 
+			{
+				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				$$ = new AssignExpNode(p, $1, $3);
+			}
 
-callExp		: id LPAREN RPAREN { }
-		| id LPAREN actualsList RPAREN { }
+callExp		: id LPAREN RPAREN 
+			{
+				cList = new std::list<ExpNode*>();
+				$$ = new CallExpNode($1->pos(), $1, cList);
+			}
+		| id LPAREN actualsList RPAREN 
+			{
+				Position* p = new Position($1->pos(), $3->pos());
+				$$ = new CallExpNode(p, $1, $3);
+			}
 
-actualsList	: exp { }
-		| actualsList COMMA exp { }
+actualsList	: exp 
+			{
+				$$ = new ExpNode($1->pos());
+			}
+		| actualsList COMMA exp 
+			{
+				Position* p = new Position($1->pos(), $3->pos());
+				$$ = new ExpNode(p);
+			}
 
-term 		: lval { /*$$ = new LValNode($1->pos());*/ }
-		| INTLITERAL { }
-		| STRLITERAL { }
-		| TRUE { }
-		| FALSE { }
-		| LPAREN exp RPAREN { }
-		| callExp { }
+
+term 		: lval { $$ = new LValNode($1->pos()); }
+		| INTLITERAL { $$ = new IntLitNode($1->pos(), $1->value); }
+		| STRLITERAL { $$ = new StrLItNode($1->pos(), $1->value); }
+		| TRUE { $$ = new TrueNode($1->pos()); }
+		| FALSE { $$ = new FalseNode($1->pos()); }
+		| LPAREN exp RPAREN { $$ = $2; }
+		| callExp { //unsure 
+		}
 
 lval		: id { $$ = $1; }
-		| id LBRACE id RBRACE { }
+		| id LBRACE id RBRACE 
+			{
+				Position* p = new Position($1->pos(), $3->pos());
+				$$ = new LValNode(p);
+			}
 
 id		: ID
 		  {

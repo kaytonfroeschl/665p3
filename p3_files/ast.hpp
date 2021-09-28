@@ -72,6 +72,7 @@ protected:
 	}
 public:
 	virtual void unparse(std::ostream& out, int indent) = 0;
+	//virtual bool isRef(TypeNode* type); 
 	//TODO: consider adding an isRef to use in unparse to 
 	// indicate if this is a reference type
 };
@@ -94,15 +95,14 @@ private:
 	ExpNode * MyLHS;
 };
 
-/*class CallExpNode : public ExpNode {
+class CallExpNode : public ExpNode {
 public: 
-	CallExpNode(Position * p, IDNode * id) : ExpNode(p), MyId(id){} //need to add "list of ExpNode (arguments) to this 
+	CallExpNode(Position * p, IDNode* id, std::list<ExpNode*>* MyList) : ExpNode(p) { }
 	void unparse(std::ostream& out, int indent) override = 0;
 private:
 	IDNode * MyId;
-};*/
-
-//FalseNode here 
+	std::list<ExpNode * > * MyList;
+};
 
 class IntLitNode : public ExpNode{
 public:
@@ -126,27 +126,41 @@ private:
 	std::string MyString;
 };
 
-//TrueNode here 
+class TrueNode : public ExpNode{
+	public: 
+		TrueNode(Position* p) : ExpNode(p){ }
+		void unparse(std::ostream& out, int indent);
+};
+
+class FalseNode : public ExpNode{
+	public: 
+		FalseNode(Position* p) : ExpNode(p){ }
+		void unparse(std::ostream& out, int indent);
+};
 
 class UnaryExpNode : public ExpNode{
 public:
 	UnaryExpNode(Position * p) : ExpNode(p){}
 	void unparse(std::ostream& out, int indent) override = 0;
+private:
+	ExpNode* MyExp;
 };
 
-/*class AssignStmtNode : public StmtNode{
+class AssignStmtNode : public StmtNode{
 public:
-	AssignStmtNode(Position * p, AssignExpNode assign) : StmtNode(p), MyAssign(assign) { }
+	AssignStmtNode(Position * p, AssignExpNode* assign) : StmtNode(p), MyAssign(assign) { }
 	void unparse(std::ostream& out, int indent) override = 0;
 private:
 	AssignExpNode * MyAssign;
-};*/
+};
 
-/*class CallStmtNode : public StmtNode{
+class CallStmtNode : public StmtNode{
 public:
-	CallStmtNode(Position * p, CallExpNode call) : StmtNode(p), MyCall(call){}
-	void unparse(std::ostream& out, int indent) override = 0;
-};*/
+	CallStmtNode(Position * p, CallExpNode* call) : StmtNode(p){ }
+	void unparse(std::ostream& out, int indent);
+private:
+	CallExpNode* myCall;
+};
 
 /** \class DeclNode
 * Superclass for declarations (i.e. nodes that can be used to 
@@ -158,17 +172,73 @@ public:
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
-//IfElseStmtNode
+class IfElseStmtNode : StmtNode{
+	public: 
+		IfElseStmtNode(Position* p, ExpNode* exp, std::list<StmtNode> tBranch, std::list<StmtNode*>* fBranch) : StmtNode(p), MyExp(exp) { }
+		void unparse(std::ostream& out, int indent);
+	private:
+		std::list<StmtNode*>* myTBranch;
+		std::list<StmtNode*>* myRBranch;
+		ExpNode* MyExp;
+};
 
-//IfStmtNode
+class IfStmtNode : public StmtNode{
+	public: 
+		IfStmtNode(Position* p, ExpNode* node, std::list<StmtNode*>* sList) : StmtNode(p) { }
+		void unparse(std::ostream& out, int indent);
+	private:
+		std::list<StmtNode*>* myList;
+		ExpNode* MyExp;
+};
 
-//PostIncStmtNode
+class PostDecStmtNode : public StmtNode{
+	public:
+		PostDecStmtNode(Position* p, LValNode* lval) : StmtNode(p) { }
+		void unparse(std::ostream& out, int indent);
+	private:
+		LValNode* myLVal;
+};
 
-//RecieveStmtNode
+class PostIncStmtNode : public StmtNode{
+	public:
+		PostIncStmtNode(Position* p, LValNode* lval) : StmtNode(p) { }
+		void unparse(std::ostream& out, int indent);
+	private:
+		LValNode* myLVal;
+};
 
-//ReportStmtNode
+class ReceiveStmtNode : public StmtNode{
+	public:
+		ReceiveStmtNode(Position* p, LValNode* lval) : StmtNode(p) { }
+		void unparse(std::ostream& out, int indent);
+	private:
+		LValNode* myLVal;
+};
 
-//WhileStmtNode
+class ReportStmtNode : public StmtNode{
+	public:
+		ReportStmtNode(Position* p, ExpNode* exp) : StmtNode(p){ }
+		void unparse(std::ostream& out, int indent);
+	private:
+		ExpNode* myExp;
+};
+
+class WhileStmtNode : public StmtNode{
+	public: 
+		WhileStmtNode(Position* p, ExpNode* exp, std::list<StmtNode*>* sList) : StmtNode(p) { }
+		void unparse(std::ostream& out, int indent);
+	private:
+		std::list<StmtNode*>* my_List;
+		ExpNode* MyExp;
+};
+
+class ReturnStmtNode : public StmtNode{
+	public:
+		ReturnStmtNode(Position* p, ExpNode* exp) : StmtNode(p) { }
+		void unparse(std::ostream& out, int indent);
+	private:
+		ExpNode* myExp;
+};
 
 class BoolTypeNode : public TypeNode{
 public:
@@ -202,77 +272,77 @@ public:
 	void unparse(std::ostream& out, int indent);
 };
 
-/*class AndNode public BinaryExpNode{
+class AndNode: public BinaryExpNode{
 public:
-	AndNode(Position * p) : ExpNode(p){}
+	AndNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){ }
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
-class DivideNode public BinaryExpNode{
+class DivideNode: public BinaryExpNode{
 public:
-	DivideNode(Position * p) : ExpNode(p){}
+	DivideNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){ }
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
 class EqualsNode: public BinaryExpNode{
 public:
-	EqualsNode(Position * p) : ExpNode(p){}
+	EqualsNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){ }
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
 class GreaterEqNode: public BinaryExpNode{
 public:
-	GreaterEqNode(Position * p) : ExpNode(p){}
+	GreaterEqNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){ }
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
 class GreaterNode: public BinaryExpNode{
 public:
-	GreaterNode(Position * p) : ExpNode(p){}
+	GreaterNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){ }
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
 class LessEqNode: public BinaryExpNode{
 public:
-	LessEqNode(Position * p) : ExpNode(p){}
+	LessEqNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){}
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
 class LessNode: public BinaryExpNode{
 public:
-	LessNode(Position * p) : ExpNode(p){}
+	LessNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){}
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
 class MinusNode: public BinaryExpNode{
 public:
-	MinusNode(Position * p) : ExpNode(p){}
+	MinusNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){}
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
 class NotEqualsNode: public BinaryExpNode{
 public:
-	NotEqualsNode(Position * p) : ExpNode(p){}
+	NotEqualsNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){}
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
 class OrNode: public BinaryExpNode{
 public:
-	OrNode(Position * p) : ExpNode(p){}
+	OrNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){}
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
 class PlusNode: public BinaryExpNode{
 public:
-	Plus(Position * p) : ExpNode(p){}
+	PlusNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){}
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
 class TimesNode: public BinaryExpNode{
 public:
-	TimesNode(Position * p) : ExpNode(p){}
+	TimesNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){}
 	void unparse(std::ostream& out, int indent) override = 0;
-};*/
+};
 
 /** An identifier. Note that IDNodes subclass
  * ExpNode because they can be used as part of an expression. 
@@ -287,15 +357,15 @@ private:
 	std::string name;
 };
 
-/*class IndexNode : public LValNode{
+class IndexNode : public LValNode{
 public:
-	IndexNode(Position * p, IDNode id1, IDNode id2) 
+	IndexNode(Position * p, IDNode* id1, IDNode* id2) 
 	: LValNode(p), MyId1(id1), MyId2(id2){ }
 	void unparse(std::ostream& out, int indent);
 private:
-	IDNode MyId1;
-	IDNode MyId2;
-};*/
+	IDNode* MyId1;
+	IDNode* MyId2;
+};
 
 class NegNode : public UnaryExpNode {
 public:
@@ -309,9 +379,6 @@ public:
 	void unparse(std::ostream& out, int indent);
 };
 
-//FnDeclNode
-
-//RecordTypeDeclNode
  
 /** A variable declaration. Note that this class is intended to 
  * represent a global or local variable of any type (including a struct
@@ -336,7 +403,27 @@ private:
 	IDNode * myId;
 };
 
-//FormalDeclNode
+class FnDeclNode : public DeclNode{
+	public:
+		FnDeclNode(Position* p, TypeNode* type, IDNode* id, std::list<FormalDeclNode*>* fList, std::list<StmtNode*>* sList)
+		: DeclNode(p), myType(type), myId(id){ }
+		void unparse(std::ostream& out, int indent);
+	private:
+		TypeNode* myType;
+		IDNode* myId;
+		std::list<FormalDeclNode*>* MyFormalList;
+		std::list<StmtNode*>* MyStmtList;
+};
+
+class FormalDeclNode : public VarDeclNode{
+	public:
+		FormalDeclNode(Position* p, TypeNode* type, IDNode* id)
+		: VarDeclNode(p, type, id), myType(type), myId(id){ }
+		void unparse(std::ostream& out, int indent);
+	private:
+		TypeNode* myType;
+		IDNode* myId;
+};
 
 } //End namespace cshanty
 

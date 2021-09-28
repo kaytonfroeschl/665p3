@@ -254,7 +254,7 @@ callExp		: id LPAREN RPAREN { }
 actualsList	: exp { }
 		| actualsList COMMA exp { }
 
-term 		: lval { $$ = new LValNode($1->pos()); }
+term 		: lval { /*$$ = new LValNode($1->pos());*/ }
 		| INTLITERAL { }
 		| STRLITERAL { }
 		| TRUE { }

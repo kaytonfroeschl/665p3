@@ -221,11 +221,14 @@ varDecl 	: type id SEMICOL
 varDeclList     : varDecl
 			{
 				$$ = new std::list<VarDeclNode*>();
+				VarDeclNode * vdNode  = $1;
+				$$->push_back(vdNode);
 			}
 		| varDeclList varDecl
 			{
-				Position * p = new Position($1->pos(), $2->pos());
-				$$ = new DeclNode(p);
+				$$ = $1;
+				VarDeclNode * vdNode = $2;
+				$$->push_back(vdNode);
 			}
 
 type 		: INT { $$ = new IntTypeNode($1->pos()); }
@@ -236,8 +239,8 @@ type 		: INT { $$ = new IntTypeNode($1->pos()); }
 
 fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE
 			{
-				Position* p = new Position($1->pos(), $2->pos(), $6->pos());
-				$$ = new FnDeclNode(p, $1, $2, $6);
+				Position* p = new Position($1->pos(), $7->pos());
+				$$ = new FnDeclNode(p, $1, $2, nullptr, $6); //will need to add in if in unparse
 
 			}
 		| type id LPAREN formals RPAREN OPEN stmtList CLOSE

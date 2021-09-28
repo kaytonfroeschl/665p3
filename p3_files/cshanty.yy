@@ -66,17 +66,17 @@ project)
    cshanty::TypeNode *                     transType;
    cshanty::IDNode *                       transID;
    cshanty::LValNode *                     transLVal;
-   cshanty::ExpNode *					  					 transExp;
-   cshanty::StmtNode *					   				 transStmt;
-   cshanty::CallExpNode *				   				 transCallExp;
-   cshanty::FnDeclNode *									 transFnDecl;
-   cshanty::FormalDeclNode *							 transFormalDecl;
-	 cshanty::list<cshanty::VarDeclNode *> * transVarDeclList;
-	 cshanty::RecordDeclNode *							 transRecordDecl; //all below and potentially this one are probably wrong but make the errors go away for now
-	 cshanty::Term													 transTerm;
-	 cshanty::Formals 											 transFormals;
-	 cshanty::ActualsList							 			 transActualsList;
-	 cshanty::StmtList											 transStmtList;
+   cshanty::ExpNode *					   transExp;
+   cshanty::StmtNode *					   transStmt;
+   cshanty::CallExpNode *				   transCallExp;
+   cshanty::FnDeclNode *				   transFnDecl;
+   cshanty::FormalDeclNode *			   transFormalDecl;
+   std::list<cshanty::VarDeclNode *> * 	   transVarDeclList;
+   std::list<cshanty::StmtNode *> *    	   transStmtList;
+   std::list<cshanty::ExpNode *> *		   transActualsList;
+   cshanty::ExpNode *					   transTerm;
+   std::list<cshanty::FormalDeclNode *> *  transFormals;
+   cshanty::DeclNode *					   transRecordDecl; //probably wrong
 }
 
 %define parse.assert
@@ -148,18 +148,18 @@ project)
 %type <transType>       type
 %type <transLVal>       lval
 %type <transID>         id
-%type <transExp>				exp
-%type <transStmt>				stmt
+%type <transExp>		exp
+%type <transStmt>		stmt
 %type <transAssignExp>	assignExp
-%type <transCallExp>		callExp
-%type <transFnDecl>			fnDecl
-%type <transTerm>				term
+%type <transCallExp>	callExp
+%type <transFnDecl>		fnDecl
+%type <transTerm>		term
 %type <transVarDeclList> varDeclList
-%type <transFormals>		formals
-%type <transActualsList>	actualsList
+%type <transFormals>	formals
+%type <transActualsList> actualsList
 %type <transRecordDecl>	 recordDecl
-%type <transStmtList>			stmtList
-%type <transFormalDecl>		formalDecl
+%type <transStmtList>	stmtList
+%type <transFormalDecl>	formalDecl
 
 
 %right ASSIGN
@@ -191,7 +191,7 @@ globals 	: globals decl
 
 decl 		: varDecl
 		  {
-			//Passhthrough rule. This nonterminal is just for
+			//Passthrough rule. This nonterminal is just for
 			// grammar structure
 			$$ = $1;
 		  }
@@ -206,7 +206,8 @@ decl 		: varDecl
 
 recordDecl	: RECORD id OPEN varDeclList CLOSE
 		{
-			Position* p = new Position($2->pos(), $4->pos());
+			//DOESN'T LIKE ANY POS CALLS WITH MORE THAN ONE VALUE
+			Position* p = new Position($2->pos(), $4->pos()); //posStr?
 			$$ = new RecordTypeNode(p, $2);
 		}
 

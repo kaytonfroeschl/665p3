@@ -175,21 +175,21 @@ public:
 
 class IfElseStmtNode : StmtNode{
 	public:
-		IfElseStmtNode(Position* p, ExpNode* exp, std::list<StmtNode> tBranch, std::list<StmtNode*>* fBranch) : StmtNode(p), MyExp(exp), myTBranch(tBranch), myRBranch(fBranch) { }
+		IfElseStmtNode(Position* p, ExpNode* exp, std::list<StmtNode*>* tBranch, std::list<StmtNode*>* fBranch) : StmtNode(p), MyExp(exp), myTBranch(tBranch), myRBranch(fBranch) { }
 		void unparse(std::ostream& out, int indent);
 	private:
+		ExpNode* MyExp;
 		std::list<StmtNode*>* myTBranch;
 		std::list<StmtNode*>* myRBranch;
-		ExpNode* MyExp;
 };
 
 class IfStmtNode : public StmtNode{
 	public:
-		IfStmtNode(Position* p, ExpNode* node, std::list<StmtNode*>* sList) : StmtNode(p) { }
+		IfStmtNode(Position* p, ExpNode* node, std::list<StmtNode*>* sList) : StmtNode(p), MyExp(node), myList(sList) { }
 		void unparse(std::ostream& out, int indent);
 	private:
-		std::list<StmtNode*>* myList;
 		ExpNode* MyExp;
+		std::list<StmtNode*>* myList;
 };
 
 class PostDecStmtNode : public StmtNode{

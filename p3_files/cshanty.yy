@@ -268,8 +268,9 @@ formalDecl 	: type id
 stmtList 	: /* epsilon */ { $$ = new std::list<StmtNode*>(); }
 		| stmtList stmt
 			{
-				Position* p = new Position($1->pos(), $2->pos());
-				$$ = new StmtNode(p);
+				$$ = $1;
+				VarDeclNode * stmtNode = $2;
+				$$->push_back(stmtNode);
 			}
 
 stmt		: varDecl

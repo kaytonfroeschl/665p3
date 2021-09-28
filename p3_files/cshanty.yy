@@ -436,7 +436,7 @@ actualsList	: exp
 
 term 		: lval { $$ = new LValNode($1->pos()); }
 		| INTLITERAL { $$ = new IntLitNode($1->pos(),$1->value); }
-		| STRLITERAL { $$ = new StrLItNode($1->pos(), $1->value); }
+		| STRLITERAL { $$ = new StrLitNode($1->pos(), $1->value); }
 		| TRUE { $$ = new TrueNode($1->pos()); }
 		| FALSE { $$ = new FalseNode($1->pos()); }
 		| LPAREN exp RPAREN { $$ = $2; }

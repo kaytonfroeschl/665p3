@@ -97,11 +97,11 @@ private:
 
 class CallExpNode : public ExpNode {
 public: 
-	CallExpNode(Position * p, IDNode* id, std::list<ExpNode*>* ExpList) : ExpNode(p) { }
+	CallExpNode(Position * p, IDNode* id, std::list<ExpNode*>* MyList) : ExpNode(p) { }
 	void unparse(std::ostream& out, int indent) override = 0;
 private:
 	IDNode * MyId;
-	std::list<ExpNode * > * myList;
+	std::list<ExpNode * > * MyList;
 };
 
 class IntLitNode : public ExpNode{

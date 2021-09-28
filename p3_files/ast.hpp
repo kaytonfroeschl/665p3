@@ -72,7 +72,7 @@ protected:
 	}
 public:
 	virtual void unparse(std::ostream& out, int indent) = 0;
-	virtual bool isRef(TypeNode* type); 
+	//virtual bool isRef(TypeNode* type); 
 	//TODO: consider adding an isRef to use in unparse to 
 	// indicate if this is a reference type
 };

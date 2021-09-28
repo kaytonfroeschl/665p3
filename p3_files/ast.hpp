@@ -72,7 +72,7 @@ protected:
 	}
 public:
 	virtual void unparse(std::ostream& out, int indent) = 0;
-	virtual bool isRef(TypeNode* type); //NOT SURE
+	virtual bool isRef(TypeNode* type); 
 	//TODO: consider adding an isRef to use in unparse to 
 	// indicate if this is a reference type
 };
@@ -142,6 +142,8 @@ class UnaryExpNode : public ExpNode{
 public:
 	UnaryExpNode(Position * p) : ExpNode(p){}
 	void unparse(std::ostream& out, int indent) override = 0;
+private:
+	ExpNode* MyExp;
 };
 
 class AssignStmtNode : public StmtNode{
@@ -156,6 +158,8 @@ class CallStmtNode : public StmtNode{
 public:
 	CallStmtNode(Position * p, CallExpNode* call) : StmtNode(p){ }
 	void unparse(std::ostream& out, int indent);
+private:
+	CallExpNode* myCall;
 };
 
 /** \class DeclNode
@@ -170,41 +174,53 @@ public:
 
 class IfElseStmtNode : StmtNode{
 	public: 
-		IfElseStmtNode(Position* p, ExpNode* exp, std::list<StmtNode> tBranch, std::list<StmtNode*>* fBranch) : StmtNode(p) { }
+		IfElseStmtNode(Position* p, ExpNode* exp, std::list<StmtNode> tBranch, std::list<StmtNode*>* fBranch) : StmtNode(p), MyExp(exp) { }
 		void unparse(std::ostream& out, int indent);
 	private:
 		std::list<StmtNode*>* myTBranch;
 		std::list<StmtNode*>* myRBranch;
+		ExpNode* MyExp;
 };
 
 class IfStmtNode : public StmtNode{
 	public: 
-		IfStmtNode(Position* p, ExpNode* node, std::list<ExpNode*>* sList) : StmtNode(p) { }
+		IfStmtNode(Position* p, ExpNode* node, std::list<StmtNode*>* sList) : StmtNode(p) { }
 		void unparse(std::ostream& out, int indent);
 	private:
-		std::list<ExpNode*>* myList;
+		std::list<StmtNode*>* myList;
+		ExpNode* MyExp;
 };
 
 class PostDecStmtNode : public StmtNode{
 	public:
 		PostDecStmtNode(Position* p, LValNode* lval) : StmtNode(p) { }
 		void unparse(std::ostream& out, int indent);
+	private:
+		LValNode* myLVal;
 };
 
 class PostIncStmtNode : public StmtNode{
 	public:
 		PostIncStmtNode(Position* p, LValNode* lval) : StmtNode(p) { }
 		void unparse(std::ostream& out, int indent);
+	private:
+		LValNode* myLVal;
 };
 
 class ReceiveStmtNode : public StmtNode{
-	ReceiveStmtNode(Position* p, LValNode* lval) : StmtNode(p) { }
-	void unparse(std::ostream& out, int indent);
+	public:
+		ReceiveStmtNode(Position* p, LValNode* lval) : StmtNode(p) { }
+		void unparse(std::ostream& out, int indent);
+	private:
+		LValNode* myLVal;
 };
 
 class ReportStmtNode : public StmtNode{
-	ReportStmtNode(Position* p, ExpNode* exp) : StmtNode(p){ }
-	void unparse(std::ostream& out, int indent);
+	public:
+		ReportStmtNode(Position* p, ExpNode* exp) : StmtNode(p){ }
+		void unparse(std::ostream& out, int indent);
+	private:
+		ExpNode* myExp;
 };
 
 class WhileStmtNode : public StmtNode{
@@ -213,12 +229,15 @@ class WhileStmtNode : public StmtNode{
 		void unparse(std::ostream& out, int indent);
 	private:
 		std::list<StmtNode*>* my_List;
+		ExpNode* MyExp;
 };
 
 class ReturnStmtNode : public StmtNode{
 	public:
 		ReturnStmtNode(Position* p, ExpNode* exp) : StmtNode(p) { }
 		void unparse(std::ostream& out, int indent);
+	private:
+		ExpNode* myExp;
 };
 
 class BoolTypeNode : public TypeNode{
@@ -340,12 +359,12 @@ private:
 
 class IndexNode : public LValNode{
 public:
-	IndexNode(Position * p, IDNode id1, IDNode id2) 
+	IndexNode(Position * p, IDNode* id1, IDNode* id2) 
 	: LValNode(p), MyId1(id1), MyId2(id2){ }
 	void unparse(std::ostream& out, int indent);
 private:
-	IDNode MyId1;
-	IDNode MyId2;
+	IDNode* MyId1;
+	IDNode* MyId2;
 };
 
 class NegNode : public UnaryExpNode {
@@ -392,6 +411,8 @@ class FnDeclNode : public DeclNode{
 	private:
 		TypeNode* myType;
 		IDNode* myId;
+		std::list<FormalDeclNode*>* MyFormalList;
+		std::list<StmtNode*>* MyStmtList;
 };
 
 class FormalDeclNode : public VarDeclNode{

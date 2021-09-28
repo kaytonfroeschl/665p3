@@ -236,8 +236,7 @@ type 		: INT { $$ = new IntTypeNode($1->pos()); }
 fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE
 			{
 				Position* p = new Position($1->pos(), $2->pos(), $6->pos());
-				EmptyList = new std::list<FormalDeclNode*>();
-				$$ = new FnDeclNode(p, $1, $2, EmptyList, $6);
+				$$ = new FnDeclNode(p, $1, $2, $6);
 			}
 		| type id LPAREN formals RPAREN OPEN stmtList CLOSE
 			{
@@ -410,8 +409,8 @@ assignExp	: lval ASSIGN exp
 
 callExp		: id LPAREN RPAREN
 			{
-				cList = new std::list<ExpNode*>();
-				$$ = new CallExpNode($1->pos(), $1, cList);
+				//cList = new std::list<ExpNode*>();
+				$$ = new CallExpNode($1->pos(), $1);
 			}
 		| id LPAREN actualsList RPAREN
 			{
@@ -431,7 +430,7 @@ actualsList	: exp
 
 
 term 		: lval { $$ = new LValNode($1->pos()); }
-		| INTLITERAL { $$ = new IntLitNode($1->pos(), $1->value); }
+		| INTLITERAL { $$ = new IntLitNode($1->pos()); }
 		| STRLITERAL { $$ = new StrLItNode($1->pos(), $1->value); }
 		| TRUE { $$ = new TrueNode($1->pos()); }
 		| FALSE { $$ = new FalseNode($1->pos()); }

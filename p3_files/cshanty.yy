@@ -251,11 +251,7 @@ fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE
 
 formals 	: formalDecl
 			{
-<<<<<<< HEAD
-	  	  		$$ = $1;
-=======
 				$$ = $1;
->>>>>>> 61420addececdb362b3b43b36448856ba9d88675
 			}
 		| formals COMMA formalDecl
 			{
@@ -430,7 +426,7 @@ callExp		: id LPAREN RPAREN
 
 actualsList	: exp
 			{
-				ExpNode* expNode = $1; 
+				ExpNode* expNode = $1;
 				$$->push_back(expNode);
 
 			}

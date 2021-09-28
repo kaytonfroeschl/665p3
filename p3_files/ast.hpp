@@ -98,7 +98,7 @@ private:
 
 class CallExpNode : public ExpNode {
 public:
-	CallExpNode(Position * p, IDNode* id, std::list<ExpNode*>* MyList) : ExpNode(p) { }
+	CallExpNode(Position * p, IDNode* id, std::list<ExpNode*>* MyList) : ExpNode(p), MyId(id), MyList(MyList) { }
 	void unparse(std::ostream& out, int indent);
 private:
 	IDNode * MyId;
@@ -157,7 +157,7 @@ private:
 
 class CallStmtNode : public StmtNode{
 public:
-	CallStmtNode(Position * p, CallExpNode* call) : StmtNode(p){ }
+	CallStmtNode(Position * p, CallExpNode* call) : StmtNode(p), myCall(call){ }
 	void unparse(std::ostream& out, int indent);
 private:
 	CallExpNode* myCall;

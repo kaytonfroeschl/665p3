@@ -66,17 +66,17 @@ project)
    cshanty::TypeNode *                     transType;
    cshanty::IDNode *                       transID;
    cshanty::LValNode *                     transLVal;
-   cshanty::ExpNode *					   transExp;
-   cshanty::StmtNode *					   transStmt;
-   cshanty::CallExpNode *				   transCallExp;
-   cshanty::FnDeclNode *				   transFnDecl;
-   cshanty::FormalDeclNode *			   transFormalDecl;
-   std::list<cshanty::VarDeclNode *> * 	   transVarDeclList;
-   std::list<cshanty::StmtNode *> *    	   transStmtList;
-   std::list<cshanty::ExpNode *> *		   transActualsList;
-   cshanty::ExpNode *					   transTerm;
+   cshanty::ExpNode *					   						transExp;
+   cshanty::StmtNode *					   					transStmt;
+   cshanty::CallExpNode *				   					transCallExp;
+   cshanty::FnDeclNode *				   					transFnDecl;
+   cshanty::FormalDeclNode *			   				transFormalDecl;
+   std::list<cshanty::VarDeclNode *> * 	    transVarDeclList;
+   std::list<cshanty::StmtNode *> *    	    transStmtList;
+   std::list<cshanty::ExpNode *> *		   		transActualsList;
+   cshanty::ExpNode *					   						transTerm;
    std::list<cshanty::FormalDeclNode *> *  transFormals;
-   cshanty::DeclNode *					   transRecordDecl; //probably wrong
+   cshanty::RecordTypeDeclNode *   				 transRecordTypeDecl;
 }
 
 %define parse.assert
@@ -157,9 +157,9 @@ project)
 %type <transVarDeclList> varDeclList
 %type <transFormals>	formals
 %type <transActualsList> actualsList
-%type <transRecordDecl>	 recordDecl
 %type <transStmtList>	stmtList
 %type <transFormalDecl>	formalDecl
+%type <transRecordTypeDecl> recordDecl
 
 
 %right ASSIGN
@@ -190,7 +190,7 @@ globals 	: globals decl
 		  }
 
 decl 		: varDecl
-		  {
+			{
 			//Passthrough rule. This nonterminal is just for
 			// grammar structure
 			$$ = $1;
@@ -206,14 +206,14 @@ decl 		: varDecl
 
 recordDecl	: RECORD id OPEN varDeclList CLOSE
 		{
-			//DOESN'T LIKE ANY POS CALLS WITH MORE THAN ONE VALUE
-			Position* p = new Position($2->pos(), $4->pos()); //posStr?
-			$$ = new RecordTypeNode(p, $2);
+			Position * p = new Position($1->pos(), $5->pos());
+			$$ = new RecordTypeDeclNode(p, $2, $4);
+
 		}
 
 varDecl 	: type id SEMICOL
 		  {
-		    Position * p = new Position($1->pos(), $2->pos());
+		    Position * p = new Position($1->pos(), $3->pos());
 		    $$ = new VarDeclNode(p, $1, $2);
 		  }
 
@@ -235,12 +235,18 @@ type 		: INT { $$ = new IntTypeNode($1->pos()); }
 
 fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE
 			{
+<<<<<<< HEAD
 				Position* p = new Position($1->pos(), $2->pos(), $6->pos());
 				$$ = new FnDeclNode(p, $1, $2, $6);
+=======
+				Position* p = new Position($1->pos(), $7->pos());
+				EmptyList = new std::list<FormalDeclNode*>();
+				$$ = new FnDeclNode(p, $1, $2, EmptyList, $6);
+>>>>>>> 6724eebc6eb6603230dbd2654180bcbc94aca33c
 			}
 		| type id LPAREN formals RPAREN OPEN stmtList CLOSE
 			{
-				Position* p = new Position($1->pos(), $2->pos(), $4->pos(), $7->pos());
+				Position* p = new Position($1->pos(), $8->pos());
 				$$ = new FnDeclNode(p, $1, $2, $4, $7);
 			}
 
@@ -293,17 +299,17 @@ stmt		: varDecl
 			}
 		| IF LPAREN exp RPAREN OPEN stmtList CLOSE
 			{
-				Position* p = new Position($3->pos(), $6->pos());
+				Position* p = new Position($3->pos(), $7->pos());
 				$$ = new IfStmtNode(p, $3, $6);
 			}
 		| IF LPAREN exp RPAREN OPEN stmtList CLOSE ELSE OPEN stmtList CLOSE
 			{
-				Position* p = new Position($3->pos(), $6->pos(), $10->pos());
+				Position* p = new Position($1->pos(), $11->pos());
 				$$ = new IfElseStmtNode(p, $3, $6, $10);
 			}
 		| WHILE LPAREN exp RPAREN OPEN stmtList CLOSE
 			{
-				Position* p = new Position($3->pos(), $6->pos());
+				Position* p = new Position($1->pos(), $7->pos());
 				$$ = new WhileStmtNode(p, $3, $6);
 			}
 		| RETURN exp SEMICOL
@@ -328,62 +334,62 @@ exp		: assignExp
 			}
 		| exp MINUS exp
 			{
-				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				Position* p = new Position($1->pos(), $3->pos());
 				$$ = new MinusNode(p, $1, $3);
 			}
 		| exp PLUS exp
 			{
-				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				Position* p = new Position($1->pos(), $3->pos());
 				$$ = new PlusNode(p, $1, $3);
 			}
 		| exp TIMES exp
 			{
-				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				Position* p = new Position($1->pos(), $3->pos());
 				$$ = new TimesNode(p, $1, $3);
 			}
 		| exp DIVIDE exp
 			{
-				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				Position* p = new Position($1->pos(), 3->pos());
 				$$ = new DivideNode(p, $1, $3);
 			}
 		| exp AND exp
 			{
-				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				Position* p = new Position($1->pos(), $3->pos());
 				$$ = new AndNode(p, $1, $3);
 			}
 		| exp OR exp
 			{
-				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				Position* p = new Position($1->pos(), $3->pos());
 				$$ = new OrNode(p, $1, $3);
 			}
 		| exp EQUALS exp
 			{
-				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				Position* p = new Position($1->pos(), $3->pos());
 				$$ = new EqualsNode(p, $1, $3);
 			}
 		| exp NOTEQUALS exp
 			{
-				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				Position* p = new Position($1->pos(), $3->pos());
 				$$ = new NotEqualsNode(p, $1, $3);
 			}
 		| exp GREATER exp
 			{
-				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				Position* p = new Position($1->pos(), $3->pos());
 				$$ = new GreaterNode(p, $1, $3);
 			}
 		| exp GREATEREQ exp
 			{
-				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				Position* p = new Position($1->pos(), $3->pos());
 				$$ = new GreaterEqNode(p, $1, $3);
 			}
 		| exp LESS exp
 			{
-				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				Position* p = new Position($1->pos(), $3->pos());
 				$$ = new LessNode(p, $1, $3);
 			}
 		| exp LESSEQ exp
 			{
-				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				Position* p = new Position($1->pos(), $3->pos());
 				$$ = new LessEqNode(p, $1, $3);
 			}
 		| NOT exp
@@ -403,7 +409,7 @@ exp		: assignExp
 
 assignExp	: lval ASSIGN exp
 			{
-				Position* p = new Position($1->pos(), $2->pos(), $3->pos());
+				Position* p = new Position($1->pos(), $3->pos());
 				$$ = new AssignExpNode(p, $1, $3);
 			}
 
@@ -414,7 +420,7 @@ callExp		: id LPAREN RPAREN
 			}
 		| id LPAREN actualsList RPAREN
 			{
-				Position* p = new Position($1->pos(), $3->pos());
+				Position* p = new Position($1->pos(), $4->pos());
 				$$ = new CallExpNode(p, $1, $3);
 			}
 
@@ -441,7 +447,7 @@ term 		: lval { $$ = new LValNode($1->pos()); }
 lval		: id { $$ = $1; }
 		| id LBRACE id RBRACE
 			{
-				Position* p = new Position($1->pos(), $3->pos());
+				Position* p = new Position($1->pos(), $4->pos());
 				$$ = new LValNode(p);
 			}
 

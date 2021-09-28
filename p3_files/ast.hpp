@@ -407,13 +407,24 @@ private:
 class FnDeclNode : public DeclNode{
 	public:
 		FnDeclNode(Position* p, TypeNode* type, IDNode* id, std::list<FormalDeclNode*>* fList, std::list<StmtNode*>* sList)
-		: DeclNode(p), myType(type), myId(id){ }
+		: DeclNode(p), myType(type), myId(id), MyFormalList(fList), MyStmtList(sList){ }
 		void unparse(std::ostream& out, int indent);
 	private:
 		TypeNode* myType;
 		IDNode* myId;
 		std::list<FormalDeclNode*>* MyFormalList;
 		std::list<StmtNode*>* MyStmtList;
+};
+
+class RecordTypeDeclNode : public DeclNode{
+public:
+	RecordTypeDeclNode(Position * p, IDNode * id, std::list<VarDeclNode*>* decl)
+	: DeclNode(p), myId(id), MyVarDeclList(decl){ }
+	void unparse(std::ostream& out, int indent);
+private:
+	TypeNode * myType;
+	IDNode * myId;
+	std::list<VarDeclNode*>* MyVarDeclList;
 };
 
 class FormalDeclNode : public VarDeclNode{

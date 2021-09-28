@@ -175,7 +175,7 @@ public:
 
 class IfElseStmtNode : StmtNode{
 	public:
-		IfElseStmtNode(Position* p, ExpNode* exp, std::list<StmtNode> tBranch, std::list<StmtNode*>* fBranch) : StmtNode(p), MyExp(exp) { }
+		IfElseStmtNode(Position* p, ExpNode* exp, std::list<StmtNode> tBranch, std::list<StmtNode*>* fBranch) : StmtNode(p), MyExp(exp), myTBranch(tBranch), myRBranch(fBranch) { }
 		void unparse(std::ostream& out, int indent);
 	private:
 		std::list<StmtNode*>* myTBranch;

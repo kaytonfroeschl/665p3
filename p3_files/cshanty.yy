@@ -251,7 +251,7 @@ fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE
 
 formals 	: formalDecl
 			{
-				$$ = new FormalDeclNode($1->pos());
+				$$ = $1;
 			}
 		| formals COMMA formalDecl
 			{
@@ -282,11 +282,11 @@ stmt		: varDecl
 			}
 		| lval DEC SEMICOL
 			{
-				$$ = new PosDecStmtNode($1->pos(), $1);
+				$$ = new PostDecStmtNode($1->pos(), $1);
 			}
 		| lval INC SEMICOL
 			{
-				$$ = new PosIncStmtNode($1->pos(), $1);
+				$$ = new PostIncStmtNode($1->pos(), $1);
 			}
 		| RECEIVE lval SEMICOL
 			{

@@ -114,7 +114,7 @@ void IfElseStmtNode::unparse(std::ostream& out, int indent){
 	for(auto element : *myRBranch){
 		element->unparse(out, 0);
 	}
-	out<<"}\n";
+	out<<"}\n}\n";
 }
 
 void IfStmtNode::unparse(std::ostream& out, int indent){

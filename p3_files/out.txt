@@ -1,3 +1,3 @@
-int f(int abool b){
-int c;
+int f(){
+return( - );
 }

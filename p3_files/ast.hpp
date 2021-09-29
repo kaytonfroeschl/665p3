@@ -226,16 +226,16 @@ class ReportStmtNode : public StmtNode{
 
 class WhileStmtNode : public StmtNode{
 	public:
-		WhileStmtNode(Position* p, ExpNode* exp, std::list<StmtNode*>* sList) : StmtNode(p) { }
+		WhileStmtNode(Position* p, ExpNode* exp, std::list<StmtNode*>* sList) : StmtNode(p), MyExp(exp), my_List(sList) { }
 		void unparse(std::ostream& out, int indent);
 	private:
-		std::list<StmtNode*>* my_List;
 		ExpNode* MyExp;
+		std::list<StmtNode*>* my_List;
 };
 
 class ReturnStmtNode : public StmtNode{
 	public:
-		ReturnStmtNode(Position* p, ExpNode* exp) : StmtNode(p) { }
+		ReturnStmtNode(Position* p, ExpNode* exp) : StmtNode(p), myExp(exp) { }
 		void unparse(std::ostream& out, int indent);
 	private:
 		ExpNode* myExp;

@@ -1,5 +1,5 @@
-
-int f (int a, bool b) {
-int c;
+int f(){
+ return(5-4);
 }
+
 

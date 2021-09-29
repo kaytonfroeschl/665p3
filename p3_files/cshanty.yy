@@ -214,13 +214,13 @@ recordDecl	: RECORD id OPEN varDeclList CLOSE
 
 		}
 
-varDecl 	: type id SEMICOL
+varDecl 	: type id SEMICOL //works
 		  {
 		    Position * p = new Position($1->pos(), $3->pos());
 		    $$ = new VarDeclNode(p, $1, $2);
 		  }
 
-varDeclList     : varDecl
+varDeclList  : varDecl //doesn't work
 			{
 				$$ = new std::list<VarDeclNode*>();
 				VarDeclNode * vdNode  = $1;
@@ -233,7 +233,7 @@ varDeclList     : varDecl
 				$$->push_back(vdNode);
 			}
 
-type 		: INT { $$ = new IntTypeNode($1->pos()); }
+type 		: INT { $$ = new IntTypeNode($1->pos()); } //works
 		| BOOL { $$ = new BoolTypeNode($1->pos()); }
 		| id { $$ = new RecordTypeNode($1->pos(), $1); }
 		| STRING { $$ = new StringTypeNode($1->pos()); }
@@ -242,7 +242,7 @@ type 		: INT { $$ = new IntTypeNode($1->pos()); }
 fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE
 			{
 				Position* p = new Position($1->pos(), $7->pos());
-				$$ = new FnDeclNode(p, $1, $2, nullptr, $6); //will need to add in if in unparse
+				$$ = new FnDeclNode(p, $1, $2, nullptr, $6); //will need to add an if in unparse
 
 			}
 		| type id LPAREN formals RPAREN OPEN stmtList CLOSE
@@ -253,7 +253,7 @@ fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE
 
 formals 	: formalDecl
 			{
-	  	  		$$ = new std::list<FormalDeclNode*>();
+	  	  $$ = new std::list<FormalDeclNode*>();
 				FormalDeclNode * fNode  = $1;
 				$$->push_back(fNode);
 			}
@@ -280,10 +280,11 @@ stmtList 	: /* epsilon */ { $$ = new std::list<StmtNode*>(); }
 
 stmt		: varDecl
 			{
-				$$= $1;
+				$$ = $1;
 			}
 		| assignExp SEMICOL
 			{
+				printf("\ngot here\n");
 				$$ = new AssignStmtNode($1->pos(), $1);
 			}
 		| lval DEC SEMICOL

@@ -40,11 +40,6 @@ void ProgramNode::unparse(std::ostream& out, int indent){
 		global->unparse(out, indent);
 	}
 }
-
-//StmtNode???
-
-//TypeNode
-
 void AssignExpNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
 	this->MyLVal->unparse(out, 0);
@@ -265,9 +260,9 @@ void VarDeclNode::unparse(std::ostream& out, int indent){
 
 void FnDeclNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
-	out<<this->myType;
+	this->myType->unparse(out, 0);
 	out<<" ";
-	out<<this->myId;
+	this->myId->unparse(out, 0);
 	out<<"(";
 	for(auto element : *MyFormalList){
 		element->unparse(out,0);
@@ -281,9 +276,9 @@ void FnDeclNode::unparse(std::ostream& out, int indent){
 
 void FormalDeclNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
-	out<<this->myType;
+	this->myType->unparse(out, 0);
 	out<<" ";
-	out<<this->myId;
+	this->myId->unparse(out, 0);
 }
 
 

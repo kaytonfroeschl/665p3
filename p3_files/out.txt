@@ -1,1 +1,3 @@
-bool c;
+int f(int abool b){
+int c;
+}

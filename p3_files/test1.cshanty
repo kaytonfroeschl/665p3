@@ -1,1 +1,3 @@
-bool c;
+int f (int a, bool b) {
+int c;
+}

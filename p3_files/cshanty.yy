@@ -183,7 +183,7 @@ globals 	: globals decl
 	  	  {
 	  	  $$ = $1;
 	  	  DeclNode * declNode = $2;
-		  $$->push_back(declNode);
+		  	$$->push_back(declNode);
 	  	  }
 		| /* epsilon */
 		  {
@@ -256,7 +256,7 @@ formals 	: formalDecl
 		| formals COMMA formalDecl
 			{
 				$$ = $1;
-				DeclNode* decNode = $3;
+				FormalDeclNode* decNode = new FormalDeclNode($3);
 				$$->push_back(decNode);
 			}
 
@@ -268,7 +268,7 @@ formalDecl 	: type id
 
 stmtList 	: /* epsilon */ { $$ = new std::list<StmtNode*>(); }
 		| stmtList stmt
-			{
+		{
 				$$ = $1;
 				VarDeclNode * stmtNode = $2;
 				$$->push_back(stmtNode);
@@ -323,7 +323,8 @@ stmt		: varDecl
 			}
 		| callExp SEMICOL
 			{
-				$$ = new CallExpNode($1->pos(), $1);
+				Position* p = new Position($1->pos(), $2->pos());
+				$$ = new CallExpNode(p, $1, nullptr); //what for id (2nd value)
 			}
 
 exp		: assignExp
@@ -350,7 +351,7 @@ exp		: assignExp
 			}
 		| exp DIVIDE exp
 			{
-				Position* p = new Position($1->pos(), 3->pos());
+				Position* p = new Position($1->pos(), $3->pos());
 				$$ = new DivideNode(p, $1, $3);
 			}
 		| exp AND exp
@@ -416,7 +417,8 @@ assignExp	: lval ASSIGN exp
 
 callExp		: id LPAREN RPAREN
 			{
-				$$ = new CallExpNode($1->pos(), $1, nullptr);
+				Position* p = new Position($1->pos(), $3->pos());
+				$$ = new CallExpNode(p, $1, nullptr);
 			}
 		| id LPAREN actualsList RPAREN
 			{

@@ -317,8 +317,11 @@ public:
 
 class MinusNode: public BinaryExpNode{
 public:
-	MinusNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){}
+	MinusNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs)/*, MinusNode(lhs), MinusLode(rhs)*/{}
 	void unparse(std::ostream& out, int indent);
+/*private:
+	ExpNode * lhs;
+	ExpNode * rhs;*/
 };
 
 class NotEqualsNode: public BinaryExpNode{
@@ -418,8 +421,8 @@ class FnDeclNode : public DeclNode{
 
 class RecordTypeDeclNode : public DeclNode{
 public:
-	RecordTypeDeclNode(Position * p, IDNode * id, std::list<VarDeclNode*>* decl)
-	: DeclNode(p), myId(id), MyVarDeclList(decl){ }
+	RecordTypeDeclNode(Position * p, IDNode * id, std::list<VarDeclNode*>* list)
+	: DeclNode(p), myId(id), MyVarDeclList(list){ }
 	void unparse(std::ostream& out, int indent);
 private:
 	IDNode * myId;

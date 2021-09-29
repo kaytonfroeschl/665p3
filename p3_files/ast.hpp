@@ -141,9 +141,9 @@ class FalseNode : public ExpNode{
 
 class UnaryExpNode : public ExpNode{
 public:
-	UnaryExpNode(Position * p) : ExpNode(p){}
+	UnaryExpNode(Position * p, ExpNode * rhs) : ExpNode(p), MyExp(rhs){}
 	void unparse(std::ostream& out, int indent) override = 0;
-private:
+protected:
 	ExpNode* MyExp;
 };
 
@@ -373,14 +373,18 @@ private:
 
 class NegNode : public UnaryExpNode {
 public:
-	NegNode(Position * p) : UnaryExpNode(p){ }
+	NegNode(Position * p, ExpNode * lhs) : UnaryExpNode(p, MyExp), NegLNode(lhs){ }
 	void unparse(std::ostream& out, int indent);
+private:
+	ExpNode * NegLNode;
 };
 
 class NotNode : public UnaryExpNode {
 public:
-	NotNode(Position * p) : UnaryExpNode(p){ }
+	NotNode(Position * p, ExpNode * lhs) : UnaryExpNode(p, MyExp), NotLNode(lhs){ }
 	void unparse(std::ostream& out, int indent);
+private:
+	ExpNode * NotLNode;
 };
 
 

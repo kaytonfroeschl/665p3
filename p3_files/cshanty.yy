@@ -274,13 +274,13 @@ stmtList 	: /* epsilon */ { $$ = new std::list<StmtNode*>(); }
 		| stmtList stmt
 		{
 				$$ = $1;
-				VarDeclNode * stmtNode = $2;
-				$$->push_back(stmtNode);
+				StmtNode* sNode = $2;
+				$$->push_back(sNode);
 			}
 
 stmt		: varDecl
 			{
-				$$ = new DeclNode($1->pos());
+				$$= $1;
 			}
 		| assignExp SEMICOL
 			{

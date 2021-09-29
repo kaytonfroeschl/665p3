@@ -275,44 +275,65 @@ public:
 
 class AndNode: public BinaryExpNode{
 public:
-	AndNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){ }
+	AndNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, MyRHS, MyLHS), AndRNode(rhs), AndLNode(lhs){}
 	void unparse(std::ostream& out, int indent);
+private:
+	ExpNode * AndRNode;
+	ExpNode * AndLNode;
 };
 
 class DivideNode: public BinaryExpNode{
 public:
-	DivideNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){ }
+	DivideNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, MyRHS, MyLHS), DivRNode(rhs), DivLNode(lhs){}
 	void unparse(std::ostream& out, int indent);
+private:
+	ExpNode * DivRNode;
+	ExpNode * DivLNode;
 };
 
 class EqualsNode: public BinaryExpNode{
 public:
-	EqualsNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){ }
+	EqualsNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, MyRHS, MyLHS), EqRNode(rhs), EqLNode(lhs){}
 	void unparse(std::ostream& out, int indent);
+private:
+	ExpNode * EqRNode;
+	ExpNode * EqLNode;
 };
 
 class GreaterEqNode: public BinaryExpNode{
 public:
-	GreaterEqNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){ }
+	GreaterEqNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, MyRHS, MyLHS), GeqRNode(rhs), GeqLNode(lhs){}
 	void unparse(std::ostream& out, int indent);
+private:
+	ExpNode * GeqRNode;
+	ExpNode * GeqLNode;
 };
 
 class GreaterNode: public BinaryExpNode{
 public:
-	GreaterNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){ }
+	GreaterNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, MyRHS, MyLHS), GrRNode(rhs), GrLNode(lhs){}
 	void unparse(std::ostream& out, int indent);
+private:
+	ExpNode * GrRNode;
+	ExpNode * GrLNode;
 };
 
 class LessEqNode: public BinaryExpNode{
 public:
-	LessEqNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){}
+	LessEqNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, MyRHS, MyLHS), LessRNode(rhs), LessLNode(lhs){}
 	void unparse(std::ostream& out, int indent);
+private:
+	ExpNode * LessRNode;
+	ExpNode * LessLNode;
 };
 
 class LessNode: public BinaryExpNode{
 public:
-	LessNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){}
+	LessNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, MyRHS, MyLHS), LessRNode(rhs), LessLNode(lhs){}
 	void unparse(std::ostream& out, int indent);
+private:
+	ExpNode * LessRNode;
+	ExpNode * LessLNode;
 };
 
 class MinusNode: public BinaryExpNode{
@@ -326,26 +347,38 @@ private:
 
 class NotEqualsNode: public BinaryExpNode{
 public:
-	NotEqualsNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){}
+	NotEqualsNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, MyRHS, MyLHS), NotEqRNode(rhs), NotEqLNode(lhs){}
 	void unparse(std::ostream& out, int indent);
+private:
+	ExpNode * NotEqRNode;
+	ExpNode * NotEqLNode;
 };
 
 class OrNode: public BinaryExpNode{
 public:
-	OrNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){}
+	OrNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, MyRHS, MyLHS), OrRNode(rhs), OrLNode(lhs){}
 	void unparse(std::ostream& out, int indent);
+private:
+	ExpNode * OrRNode;
+	ExpNode * OrLNode;
 };
 
 class PlusNode: public BinaryExpNode{
 public:
-	PlusNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){}
+	PlusNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, MyRHS, MyLHS), PlusRNode(rhs), PlusLNode(lhs){}
 	void unparse(std::ostream& out, int indent);
+private:
+	ExpNode * PlusRNode;
+	ExpNode * PlusLNode;
 };
 
 class TimesNode: public BinaryExpNode{
 public:
-	TimesNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs){}
+	TimesNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, MyRHS, MyLHS), TimesRNode(rhs), TimesLNode(lhs){}
 	void unparse(std::ostream& out, int indent);
+private:
+	ExpNode * TimesRNode;
+	ExpNode * TimesLNode;
 };
 
 /** An identifier. Note that IDNodes subclass

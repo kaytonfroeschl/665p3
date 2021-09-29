@@ -81,11 +81,11 @@ void StrLitNode::unparse(std::ostream& out, int indent){
 }
 
 void TrueNode::unparse(std::ostream& out, int indent){
-	out<<"True";
+	out<<"true";
 }
 
 void FalseNode::unparse(std::ostream& out, int indent){
-	out<<"False";
+	out<<"false";
 }
 
 void UnaryExpNode::unparse(std::ostream& out, int indent){
@@ -157,9 +157,9 @@ void WhileStmtNode::unparse(std::ostream& out, int indent){
 
 void ReturnStmtNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
-	out<<"return( ";
+	out<<"return ";
 	this->myExp->unparse(out,0);
-	out<<" );\n";
+	out<<" ;\n";
 }
 
 void BoolTypeNode::unparse(std::ostream& out, int indent){
@@ -215,7 +215,9 @@ void LessNode::unparse(std::ostream& out, int indent){
 }
 
 void MinusNode::unparse(std::ostream& out, int indent){
-	out << "-";
+	this->MinusRNode->unparse(out, 0);
+	out << " - ";
+	this->MinusLNode->unparse(out, 0);
 }
 
 void NotEqualsNode::unparse(std::ostream& out, int indent){

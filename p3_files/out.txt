@@ -1,3 +1,6 @@
 int f(){
-return( - );
+if (True){
+else {
+}
+return 5 - 4 ;
 }

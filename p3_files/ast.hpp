@@ -91,7 +91,7 @@ class BinaryExpNode : public ExpNode{
 public:
 	BinaryExpNode(Position * p, ExpNode * rhs, ExpNode * lhs) : ExpNode(p), MyRHS(rhs), MyLHS(lhs){}
 	void unparse(std::ostream& out, int indent) override = 0;
-private:
+protected:
 	ExpNode * MyRHS;
 	ExpNode * MyLHS;
 };
@@ -317,11 +317,11 @@ public:
 
 class MinusNode: public BinaryExpNode{
 public:
-	MinusNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, rhs, lhs)/*, MinusNode(lhs), MinusLode(rhs)*/{}
+	MinusNode(Position * p, ExpNode * rhs, ExpNode * lhs) : BinaryExpNode(p, MyRHS, MyLHS), MinusRNode(rhs), MinusLNode(lhs){}
 	void unparse(std::ostream& out, int indent);
-/*private:
-	ExpNode * lhs;
-	ExpNode * rhs;*/
+private:
+	ExpNode * MinusRNode;
+	ExpNode * MinusLNode;
 };
 
 class NotEqualsNode: public BinaryExpNode{

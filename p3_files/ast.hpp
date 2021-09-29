@@ -173,7 +173,7 @@ public:
 	void unparse(std::ostream& out, int indent) override = 0;
 };
 
-class IfElseStmtNode : StmtNode{
+class IfElseStmtNode : public StmtNode{
 	public:
 		IfElseStmtNode(Position* p, ExpNode* exp, std::list<StmtNode*>* tBranch, std::list<StmtNode*>* fBranch) : StmtNode(p), MyExp(exp), myTBranch(tBranch), myRBranch(fBranch) { }
 		void unparse(std::ostream& out, int indent);

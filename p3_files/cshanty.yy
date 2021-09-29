@@ -59,6 +59,8 @@ project)
    cshanty::Token* lexeme;
    cshanty::Token* transToken;
    cshanty::IDToken*                       transIDToken;
+	 cshanty::IntLitToken*									 transIntToken;
+	 cshanty::StrToken*											 transStrToken;
    cshanty::ProgramNode*                   transProgram;
    std::list<cshanty::DeclNode *> *        transDeclList;
    cshanty::DeclNode *                     transDecl;
@@ -90,7 +92,7 @@ project)
  *  Some terminals, like ID, are "transIDToken", meaning the translation
  *  also has a name field.
 */
-%token                   END	   0 "end file"
+%token                   END	   0 "e%token	<transIntToken>  INTLITERALnd file"
 %token	<transToken>     AND
 %token	<transToken>     ASSIGN
 %token	<transToken>     BOOL
@@ -443,8 +445,8 @@ actualsList	: exp
 
 
 term 		: lval { $$ = new LValNode($1->pos()); }
-		| INTLITERAL { $$ = new IntLitNode($1->pos(),$1->value); }
-		| STRLITERAL { $$ = new StrLitNode($1->pos(), $1->value); }
+		| INTLITERAL { $$ = new IntLitNode($1->pos(),$1->num()); }
+		| STRLITERAL { $$ = new StrLitNode($1->pos(), $1->str()); }
 		| TRUE { $$ = new TrueNode($1->pos()); }
 		| FALSE { $$ = new FalseNode($1->pos()); }
 		| LPAREN exp RPAREN { $$ = $2; }

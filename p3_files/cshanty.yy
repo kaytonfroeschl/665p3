@@ -323,7 +323,7 @@ stmt		: varDecl
 			}
 		| RETURN SEMICOL
 			{
-				//$$ = $1; UNSURE
+				$$ = new ReturnStmtNode($2->pos(), nullptr);
 			}
 		| callExp SEMICOL
 			{
@@ -444,7 +444,7 @@ actualsList	: exp
 			}
 
 
-term 		: lval { $$ = new LValNode($1->pos()); }
+term 		: lval { $$ = $1; }
 		| INTLITERAL { $$ = new IntLitNode($1->pos(),$1->num()); }
 		| STRLITERAL { $$ = new StrLitNode($1->pos(), $1->str()); }
 		| TRUE { $$ = new TrueNode($1->pos()); }
@@ -456,7 +456,7 @@ lval		: id { $$ = $1; }
 		| id LBRACE id RBRACE
 			{
 				Position* p = new Position($1->pos(), $4->pos());
-				$$ = new LValNode(p);
+				$$ = new IndexNode(p, $1, $3);
 			}
 
 id		: ID

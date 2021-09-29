@@ -114,7 +114,7 @@ void IfElseStmtNode::unparse(std::ostream& out, int indent){
 	for(auto element : *myRBranch){
 		element->unparse(out, 0);
 	}
-	out<<"}\n";
+	out<<"}\n}\n";
 }
 
 void IfStmtNode::unparse(std::ostream& out, int indent){
@@ -187,31 +187,45 @@ void IntTypeNode::unparse(std::ostream& out, int indent){
 }
 
 void AndNode::unparse(std::ostream& out, int indent){
-	out << "&&";
+	this->AndRNode->unparse(out, 0);
+	out << " && ";
+	this->AndLNode->unparse(out, 0);
 }
 
 void DivideNode::unparse(std::ostream& out, int indent){
-	out << "/";
+	this->DivideRNode->unparse(out, 0);
+	out << " / ";
+	this->DivideLNode->unparse(out, 0);
 }
 
 void EqualsNode::unparse(std::ostream& out, int indent){
-	out << "==";
+	this->EqualsRNode->unparse(out, 0);
+	out << " == ";
+	this->EqualsLNode->unparse(out, 0);
 }
 
 void GreaterEqNode::unparse(std::ostream& out, int indent){
-	out << ">=";
+	this->GreaterEqRNode->unparse(out, 0);
+	out << " >= ";
+	this->GreaterEqLNode->unparse(out, 0);
 }
 
 void GreaterNode::unparse(std::ostream& out, int indent){
-	out << ">";
+	this->GreaterRNode->unparse(out, 0);
+	out << " > ";
+	this->GreaterLNode->unparse(out, 0);
 }
 
 void LessEqNode::unparse(std::ostream& out, int indent){
-	out << "<=";
+	this->LessEqRNode->unparse(out, 0);
+	out << " <= ";
+	this->LessEqLNode->unparse(out, 0);
 }
 
 void LessNode::unparse(std::ostream& out, int indent){
-	out << "<";
+	this->LessRNode->unparse(out, 0);
+	out << " < ";
+	this->LessLNode->unparse(out, 0);
 }
 
 void MinusNode::unparse(std::ostream& out, int indent){
@@ -221,19 +235,27 @@ void MinusNode::unparse(std::ostream& out, int indent){
 }
 
 void NotEqualsNode::unparse(std::ostream& out, int indent){
-	out << "!=";
+	this->NotEqualsRNode->unparse(out, 0);
+	out << " != ";
+	this->NotEqualsLNode->unparse(out, 0);
 }
 
 void OrNode::unparse(std::ostream& out, int indent){
-	out << "||";
+	this->OrRNode->unparse(out, 0);
+	out << " || ";
+	this->OrLNode->unparse(out, 0);
 }
 
 void PlusNode::unparse(std::ostream& out, int indent){
-	out << "+";
+	this->PlusRNode->unparse(out, 0);
+	out << " + ";
+	this->PlusLNode->unparse(out, 0);
 }
 
 void TimesNode::unparse(std::ostream& out, int indent){
-	out << "*";
+	this->TimesRNode->unparse(out, 0);
+	out << " * ";
+	this->TimesLNode->unparse(out, 0);
 }
 
 void IndexNode::unparse(std::ostream& out, int indent){
@@ -245,10 +267,12 @@ void IndexNode::unparse(std::ostream& out, int indent){
 }
 
 void NegNode::unparse(std::ostream& out, int indent){
+	this->NegNode->unparse(out, 0);
 	out<<"-";
 }
 
 void NotNode::unparse(std::ostream& out, int indent){
+	this->NotNode->unparse(out, 0);
 	out<<"!";
 }
 

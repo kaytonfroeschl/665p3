@@ -251,17 +251,15 @@ fnDecl 		: type id LPAREN RPAREN OPEN stmtList CLOSE
 
 formals 	: formalDecl
 			{
-<<<<<<< HEAD
-	  	  		$$ = $1;
-=======
-				$$ = $1;
->>>>>>> 61420addececdb362b3b43b36448856ba9d88675
+	  	  		$$ = new std::list<FormalDeclNode*>();
+				FormalDeclNode * fNode  = $1;
+				$$->push_back(fNode);
 			}
 		| formals COMMA formalDecl
 			{
 				$$ = $1;
-				DeclNode* decNode = $3;
-				$$->push_back(decNode);
+				FormalDeclNode * fNode = $3;
+				$$->push_back(fNode);
 			}
 
 formalDecl 	: type id

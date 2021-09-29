@@ -450,8 +450,7 @@ term 		: lval { $$ = new LValNode($1->pos()); }
 		| TRUE { $$ = new TrueNode($1->pos()); }
 		| FALSE { $$ = new FalseNode($1->pos()); }
 		| LPAREN exp RPAREN { $$ = $2; }
-		| callExp { //unsure
-		}
+		| callExp { $$ = $1;}
 
 lval		: id { $$ = $1; }
 		| id LBRACE id RBRACE

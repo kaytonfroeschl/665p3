@@ -92,7 +92,7 @@ project)
  *  Some terminals, like ID, are "transIDToken", meaning the translation
  *  also has a name field.
 */
-%token                   END	   0 "e%token	<transIntToken>  INTLITERALnd file"
+%token                   END	   0 "end file"
 %token	<transToken>     AND
 %token	<transToken>     ASSIGN
 %token	<transToken>     BOOL

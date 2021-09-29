@@ -183,7 +183,7 @@ globals 	: globals decl
 	  	  {
 	  	  $$ = $1;
 	  	  DeclNode * declNode = $2;
-		  $$->push_back(declNode);
+		  	$$->push_back(declNode);
 	  	  }
 		| /* epsilon */
 		  {
@@ -270,7 +270,7 @@ formalDecl 	: type id
 
 stmtList 	: /* epsilon */ { $$ = new std::list<StmtNode*>(); }
 		| stmtList stmt
-			{
+		{
 				$$ = $1;
 				VarDeclNode * stmtNode = $2;
 				$$->push_back(stmtNode);
@@ -325,7 +325,8 @@ stmt		: varDecl
 			}
 		| callExp SEMICOL
 			{
-				$$ = new CallExpNode($1->pos(), $1);
+				Position* p = new Position($1->pos(), $2->pos());
+				$$ = new CallExpNode(p, $1, nullptr); //what for id (2nd value)
 			}
 
 exp		: assignExp
@@ -352,7 +353,7 @@ exp		: assignExp
 			}
 		| exp DIVIDE exp
 			{
-				Position* p = new Position($1->pos(), 3->pos());
+				Position* p = new Position($1->pos(), $3->pos());
 				$$ = new DivideNode(p, $1, $3);
 			}
 		| exp AND exp
@@ -418,7 +419,8 @@ assignExp	: lval ASSIGN exp
 
 callExp		: id LPAREN RPAREN
 			{
-				$$ = new CallExpNode($1->pos(), $1, nullptr);
+				Position* p = new Position($1->pos(), $3->pos());
+				$$ = new CallExpNode(p, $1, nullptr);
 			}
 		| id LPAREN actualsList RPAREN
 			{
@@ -428,7 +430,7 @@ callExp		: id LPAREN RPAREN
 
 actualsList	: exp
 			{
-				ExpNode* expNode = $1; 
+				ExpNode* expNode = $1;
 				$$->push_back(expNode);
 
 			}
@@ -442,7 +444,7 @@ actualsList	: exp
 
 term 		: lval { $$ = new LValNode($1->pos()); }
 		| INTLITERAL { $$ = new IntLitNode($1->pos(),$1->value); }
-		| STRLITERAL { $$ = new StrLItNode($1->pos(), $1->value); }
+		| STRLITERAL { $$ = new StrLitNode($1->pos(), $1->value); }
 		| TRUE { $$ = new TrueNode($1->pos()); }
 		| FALSE { $$ = new FalseNode($1->pos()); }
 		| LPAREN exp RPAREN { $$ = $2; }

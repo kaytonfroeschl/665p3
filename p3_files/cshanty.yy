@@ -210,7 +210,7 @@ decl 		: varDecl
 recordDecl	: RECORD id OPEN varDeclList CLOSE
 		{
 			Position * p = new Position($1->pos(), $5->pos());
-			$$ = new RecordTypeDeclNode(p, $2, $4);
+			//$$ = new RecordTypeDeclNode(p, $2, $4);
 
 		}
 

@@ -422,7 +422,6 @@ public:
 	: DeclNode(p), myId(id), MyVarDeclList(decl){ }
 	void unparse(std::ostream& out, int indent);
 private:
-	TypeNode * myType;
 	IDNode * myId;
 	std::list<VarDeclNode*>* MyVarDeclList;
 };

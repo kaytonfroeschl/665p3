@@ -157,9 +157,9 @@ void WhileStmtNode::unparse(std::ostream& out, int indent){
 
 void ReturnStmtNode::unparse(std::ostream& out, int indent){
 	doIndent(out, indent);
-	out<<"return(";
+	out<<"return( ";
 	this->myExp->unparse(out,0);
-	out<<");\n";
+	out<<" );\n";
 }
 
 void BoolTypeNode::unparse(std::ostream& out, int indent){

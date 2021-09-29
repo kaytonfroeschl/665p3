@@ -327,7 +327,8 @@ stmt		: varDecl
 			}
 		| callExp SEMICOL
 			{
-				$$ = CallExpNode*()
+				Position* p = new Position($1->pos(), $2->pos());
+				$$ = new CallStmtNode(p, $1);
 			}
 
 exp		: assignExp
